@@ -9,7 +9,7 @@ public class CertificateGeneratorTests
     {
         // Arrange
         var adoptionRecord = new AdoptionRecord("Janssen", 20, new DateOnly(2024, 6, 19), Language.Dutch);
-        Stream templateStream = CreateBlackTemplate();
+        using Stream templateStream = ImageUtils.CreateBlackTemplate();
         var sut = new CertificateGenerator(templateStream);
 
         // Act
@@ -38,27 +38,5 @@ public class CertificateGeneratorTests
         }
 
         return true;
-    }
-
-    private static MemoryStream CreateBlackTemplate()
-    {
-        using var bitmap = new SKBitmap(3507, 2480);
-        using (var canvas = new SKCanvas(bitmap))
-        {
-            canvas.Clear(SKColors.Black);
-        }
-
-        using var image = SKImage.FromBitmap(bitmap);
-        var data = image.Encode(SKEncodedImageFormat.Png, 100);
-
-        // Create a memory stream
-        var memoryStream = new MemoryStream();
-        data.SaveTo(memoryStream);
-
-        // Use the memory stream as needed
-        // For example, reset the position to the beginning
-        memoryStream.Position = 0;
-
-        return memoryStream;
     }
 }

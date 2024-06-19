@@ -1,10 +1,28 @@
+using System.Reflection;
 using SkiaSharp;
 
 namespace AdopteerRegenwoud.CertificateGeneratorCore;
 
-public class CertificateGenerator(Stream certificateTemplate)
+public class CertificateGenerator
 {
-    private readonly Stream _certificateTemplate = certificateTemplate;
+    private readonly Stream _certificateTemplate;
+    private readonly SKTypeface _robotoSlabTypeface;
+
+    public CertificateGenerator(Stream certificateTemplate)
+    {
+        _certificateTemplate = certificateTemplate;
+
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = "AdopteerRegenwoudCertificateGeneratorCore.fonts.RobotoSlab-VariableFont_wght.ttf";
+
+        using Stream? fontStream = assembly.GetManifestResourceStream(resourceName);
+        if (fontStream == null)
+        {
+            throw new FileNotFoundException("Font file not found in embedded resources.");
+        }
+
+        _robotoSlabTypeface = SKTypeface.FromStream(fontStream);
+    }
 
     public Stream Generate(AdoptionRecord adoptionRecord)
     {
@@ -16,9 +34,9 @@ public class CertificateGenerator(Stream certificateTemplate)
         var paint = new SKPaint
         {
             Color = SKColors.White,
-            TextSize = 40,
+            TextSize = 80,
             IsAntialias = true,
-            Typeface = font
+            Typeface = _robotoSlabTypeface
         };
 
         var point = new SKPoint(100, 100);
