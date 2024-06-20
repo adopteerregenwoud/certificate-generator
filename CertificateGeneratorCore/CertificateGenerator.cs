@@ -12,15 +12,18 @@ public class CertificateGenerator
     }
 
     private readonly SKBitmap _certificateTemplateBitmap;
-    private readonly SKTypeface _robotoSlabTypefaceMedium;
+    public SKTypeface RobotoSlabTypefaceMedium { get; private set; }
     private readonly SKTypeface _robotoSlabTypefaceRegular;
 
+    private const int expectedWidth = 3507;
+    private const int expectedHeight = 2480;
     private const int rightMarginSquareMeters = 60;
     private const int topMarginSquareMeters = 0;
     private const int fontSizeSquareMeters = 330;
     private const int leftMarginName = 810;
     private const int bottomMarginName = 750;
-    private const int fontSizeName = 175;
+    public const int MaxNameWidth = 1670;
+    public const int FontSizeName = 175;
     private const int leftMarginDate = leftMarginName;
     private const int bottomMarginDate = 460;
     private const int fontSizeDate = 50;
@@ -28,7 +31,12 @@ public class CertificateGenerator
     public CertificateGenerator(Stream certificateTemplateStream)
     {
         _certificateTemplateBitmap = ReadBitmapFromStream(certificateTemplateStream);
-        _robotoSlabTypefaceMedium = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Medium.ttf");
+        if (_certificateTemplateBitmap.Width != expectedWidth || _certificateTemplateBitmap.Height != expectedHeight)
+        {
+            throw new InvalidDataException($"Template image is not {expectedWidth}x{expectedHeight}");
+        }
+
+        RobotoSlabTypefaceMedium = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Medium.ttf");
         _robotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
     }
 
@@ -85,7 +93,7 @@ public class CertificateGenerator
         var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize, topMarginSquareMeters + fontSizeSquareMeters);
         canvas.DrawText(m2Text, point, paint);
 
-        paint.Typeface = _robotoSlabTypefaceMedium;
+        paint.Typeface = RobotoSlabTypefaceMedium;
         string text = $"{squareMeters}";
         float textSize = paint.MeasureText(text);
 
@@ -98,13 +106,77 @@ public class CertificateGenerator
         var paint = new SKPaint
         {
             Color = SKColors.White,
-            TextSize = fontSizeName,
+            TextSize = FontSizeName,
             IsAntialias = true,
-            Typeface = _robotoSlabTypefaceMedium
+            Typeface = RobotoSlabTypefaceMedium
         };
 
-        var point = new SKPoint(leftMarginName, bitmap.Height - bottomMarginName);
-        canvas.DrawText(name, point, paint);
+        IList<string> wrappedLines = WrapText(name, paint, MaxNameWidth);
+
+        int firstLineYOffset = 0;
+        if (wrappedLines.Count == 1)
+        {
+            firstLineYOffset = FontSizeName / 2;
+        }
+        var point = new SKPoint(leftMarginName, bitmap.Height - bottomMarginName + firstLineYOffset);
+        canvas.DrawText(wrappedLines[0], point, paint);
+
+        if (wrappedLines.Count > 1)
+        {
+            point = new SKPoint(leftMarginName, bitmap.Height - bottomMarginName + FontSizeName);
+            canvas.DrawText(wrappedLines[1], point, paint);
+        }
+
+        if (wrappedLines.Count > 2)
+        {
+            throw new NotImplementedException("No code for very long lines yet.");
+        }
+    }
+
+    public static IList<string> WrapText(string text, SKPaint paint, int maxWidth)
+    {
+        float width = paint.MeasureText(text);
+        if (width <= maxWidth)
+        {
+            return [text];
+        }
+
+        List<string> wrappedLines = [];
+        string[] parts = text.Split(' ');
+        int nrParts = parts.Length;
+        int currentPart = 0;
+
+        while (currentPart < nrParts)
+        {
+            string currentLine = parts[currentPart];
+
+            if (currentPart == nrParts - 1)
+            {
+                wrappedLines.Add(currentLine);
+                break;
+            }
+
+            string nextPart = parts[currentPart + 1];
+            string textToCheck = $"{currentLine} {nextPart}";
+            while (paint.MeasureText(textToCheck) <= maxWidth)
+            {
+                currentLine = textToCheck;
+                currentPart++;
+
+                if (currentPart == nrParts - 1)
+                {
+                    break;
+                }
+
+                nextPart = parts[currentPart + 1];
+                textToCheck = $"{currentLine} {nextPart}";
+            }
+
+            wrappedLines.Add(currentLine);
+            currentPart++;
+        }
+
+        return wrappedLines;
     }
 
     private void RenderDate(SKCanvas canvas, SKBitmap bitmap, DateOnly date)
