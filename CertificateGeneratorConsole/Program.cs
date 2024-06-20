@@ -16,7 +16,7 @@ internal class Program
 
         Console.WriteLine($"Reading certificate template from {templatePath}...");
         Stream template = new FileStream(templatePath, FileMode.Open, FileAccess.Read);
-        var certificateGenerator = new CertificateGenerator(template);
+        var certificateGenerator = new CertificateGenerator(new FileTemplateBitmapRetriever(template));
 
         Console.WriteLine($"Reading records from {excelPath}...");
         IEnumerable<AdoptionRecord> adoptionRecords = ParseExcel(excelPath);
