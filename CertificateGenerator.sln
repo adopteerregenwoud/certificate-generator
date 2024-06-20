@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdopteerRegenwoudCertificateGeneratorCore", "AdopteerRegenwoudCertificateGeneratorCore\AdopteerRegenwoudCertificateGeneratorCore.csproj", "{AF731BD7-32CF-4C63-A20A-710F945DDF77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertificateGeneratorCore", "CertificateGeneratorCore\CertificateGeneratorCore.csproj", "{AF731BD7-32CF-4C63-A20A-710F945DDF77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdopteerRegenwoudCertificateGeneratorCoreTests", "AdopteerRegenwoudCertificateGeneratorCoreTests\AdopteerRegenwoudCertificateGeneratorCoreTests.csproj", "{E25FC62E-7A28-4EF0-8634-E0F01A079B5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertificateGeneratorCoreTests", "CertificateGeneratorCoreTests\CertificateGeneratorCoreTests.csproj", "{E25FC62E-7A28-4EF0-8634-E0F01A079B5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdopteerRegenwoudCertificateGeneratorConsole", "AdopteerRegenwoudCertificateGeneratorConsole\AdopteerRegenwoudCertificateGeneratorConsole.csproj", "{361E664D-5E9A-4D77-A021-25FF4AD08875}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertificateGeneratorConsole", "CertificateGeneratorConsole\CertificateGeneratorConsole.csproj", "{361E664D-5E9A-4D77-A021-25FF4AD08875}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

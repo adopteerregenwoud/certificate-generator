@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\AdopteerRegenwoudCertificateGeneratorCore\AdopteerRegenwoudCertificateGeneratorCore.csproj" />
+    <ProjectReference Include="..\CertificateGeneratorCore\CertificateGeneratorCore.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

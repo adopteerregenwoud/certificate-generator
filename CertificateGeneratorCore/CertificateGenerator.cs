@@ -1,7 +1,7 @@
 using System.Reflection;
 using SkiaSharp;
 
-namespace AdopteerRegenwoud.CertificateGeneratorCore;
+namespace CertificateGeneratorCore;
 
 public class CertificateGenerator
 {
@@ -23,7 +23,7 @@ public class CertificateGenerator
         _certificateTemplate = certificateTemplate;
 
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "AdopteerRegenwoudCertificateGeneratorCore.fonts.RobotoSlab-VariableFont_wght.ttf";
+        var resourceName = "CertificateGeneratorCore.fonts.RobotoSlab-VariableFont_wght.ttf";
 
         using Stream? fontStream = assembly.GetManifestResourceStream(resourceName);
         if (fontStream == null)

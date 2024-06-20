@@ -1,6 +1,6 @@
 using SkiaSharp;
 
-namespace AdopteerRegenwoud.CertificateGeneratorCore;
+namespace CertificateGeneratorCore;
 
 public static class ImageUtils
 {

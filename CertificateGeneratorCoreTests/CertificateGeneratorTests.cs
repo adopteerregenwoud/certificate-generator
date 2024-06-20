@@ -1,6 +1,6 @@
 using SkiaSharp;
 
-namespace AdopteerRegenwoudCertificateGeneratorCoreTests;
+namespace CertificateGeneratorCoreTests;
 
 public class CertificateGeneratorTests
 {

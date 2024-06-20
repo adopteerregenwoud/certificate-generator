@@ -1,4 +1,4 @@
-﻿namespace AdopteerRegenwoud.CertificateGeneratorCore;
+﻿namespace CertificateGeneratorCore;
 
 public enum Language
 {

@@ -1,7 +1,7 @@
 using OfficeOpenXml;
 using EPPlus.DataExtractor;
 
-namespace AdopteerRegenwoud.CertificateGeneratorCore;
+namespace CertificateGeneratorCore;
 
 public class ExcelAdoptionRecordsParse : IAdoptionRecordsParser
 {

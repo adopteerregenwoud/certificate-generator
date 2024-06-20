@@ -1,4 +1,4 @@
-﻿using AdopteerRegenwoud.CertificateGeneratorCore;
+﻿using CertificateGeneratorCore;
 
 internal class Program
 {
@@ -6,7 +6,7 @@ internal class Program
     {
         if (args.Length != 2)
         {
-            Console.WriteLine("Usage: AdopteerRegenwoudCertificateGeneratorConsole <path to template> <output directory>");
+            Console.WriteLine("Usage: CertificateGeneratorConsole <path to template> <output directory>");
             Environment.Exit(1);
         }
 

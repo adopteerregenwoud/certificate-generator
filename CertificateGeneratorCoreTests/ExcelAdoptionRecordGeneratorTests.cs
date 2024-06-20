@@ -1,4 +1,4 @@
-namespace AdopteerRegenwoudCertificateGeneratorCoreTests;
+namespace CertificateGeneratorCoreTests;
 
 public class ExcelAdoptionRecordsParserTests
 {
