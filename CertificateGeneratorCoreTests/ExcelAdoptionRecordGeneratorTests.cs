@@ -8,7 +8,7 @@ public class ExcelAdoptionRecordsParserTests
         // Arrange
         var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "example.xlsx");
         var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-        var sut = new ExcelAdoptionRecordsParse(stream);
+        var sut = new ExcelAdoptionRecordsParser(stream);
 
         // Act
         List<AdoptionRecord> actualRecords = sut.Parse().ToList();

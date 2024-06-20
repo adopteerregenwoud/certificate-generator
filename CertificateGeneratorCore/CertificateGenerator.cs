@@ -5,7 +5,7 @@ namespace CertificateGeneratorCore;
 
 public class CertificateGenerator
 {
-    private readonly Stream _certificateTemplate;
+    private readonly SKBitmap _certificateTemplateBitmap;
     private readonly SKTypeface _robotoSlabTypeface;
 
     private const int rightMarginSquareMeters = 60;
@@ -18,10 +18,20 @@ public class CertificateGenerator
     private const int bottomMarginDate = 460;
     private const int fontSizeDate = 50;
 
-    public CertificateGenerator(Stream certificateTemplate)
+    public CertificateGenerator(Stream certificateTemplateStream)
     {
-        _certificateTemplate = certificateTemplate;
+        _certificateTemplateBitmap = ReadBitmapFromStream(certificateTemplateStream);
+        _robotoSlabTypeface = ReadFontFromEmbeddedResource();
+    }
 
+    private static SKBitmap ReadBitmapFromStream(Stream certificateTemplateStream)
+    {
+        using var inputStream = new SKManagedStream(certificateTemplateStream);
+        return SKBitmap.Decode(inputStream);
+    }
+
+    private static SKTypeface ReadFontFromEmbeddedResource()
+    {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "CertificateGeneratorCore.fonts.RobotoSlab-VariableFont_wght.ttf";
 
@@ -31,22 +41,13 @@ public class CertificateGenerator
             throw new FileNotFoundException("Font file not found in embedded resources.");
         }
 
-        _robotoSlabTypeface = SKTypeface.FromStream(fontStream);
+        return SKTypeface.FromStream(fontStream);
     }
 
     public Stream Generate(AdoptionRecord adoptionRecord)
     {
-        using var inputStream = new SKManagedStream(_certificateTemplate);
-        using var bitmap = SKBitmap.Decode(inputStream);
+        using var bitmap = _certificateTemplateBitmap.Copy();
         using var canvas = new SKCanvas(bitmap);
-
-        var paint = new SKPaint
-        {
-            Color = SKColors.White,
-            TextSize = 80,
-            IsAntialias = true,
-            Typeface = _robotoSlabTypeface
-        };
 
         RenderSquareMeters(canvas, bitmap, adoptionRecord.SquareMeters);
         RenderName(canvas, bitmap, adoptionRecord.Name);

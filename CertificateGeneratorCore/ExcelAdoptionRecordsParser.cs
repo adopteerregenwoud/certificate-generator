@@ -3,11 +3,11 @@ using EPPlus.DataExtractor;
 
 namespace CertificateGeneratorCore;
 
-public class ExcelAdoptionRecordsParse : IAdoptionRecordsParser
+public class ExcelAdoptionRecordsParser : IAdoptionRecordsParser
 {
     private readonly Stream _stream;
 
-    public ExcelAdoptionRecordsParse(Stream stream)
+    public ExcelAdoptionRecordsParser(Stream stream)
     {
         this._stream = stream;
     }

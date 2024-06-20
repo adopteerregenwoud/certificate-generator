@@ -5,7 +5,7 @@ namespace CertificateGeneratorCoreTests;
 public class CertificateGeneratorTests
 {
     [Test]
-    public void TestGenerate()
+    public void TestGenerateOne()
     {
         // Arrange
         var adoptionRecord = new AdoptionRecord("Janssen", 20, new DateOnly(2024, 6, 19), Language.Dutch);
@@ -14,6 +14,22 @@ public class CertificateGeneratorTests
 
         // Act
         Stream generatedStream = sut.Generate(adoptionRecord);
+
+        // Assert
+        Assert.That(AreAllPixelsBlack(generatedStream), Is.False);
+    }
+
+    [Test]
+    public void TestGenerateTwo()
+    {
+        // Arrange
+        var adoptionRecord = new AdoptionRecord("Janssen", 20, new DateOnly(2024, 6, 19), Language.Dutch);
+        using Stream templateStream = ImageUtils.CreateBlackTemplate();
+        var sut = new CertificateGenerator(templateStream);
+        Stream generatedStream = sut.Generate(adoptionRecord);
+
+        // Act
+        generatedStream = sut.Generate(adoptionRecord);
 
         // Assert
         Assert.That(AreAllPixelsBlack(generatedStream), Is.False);
