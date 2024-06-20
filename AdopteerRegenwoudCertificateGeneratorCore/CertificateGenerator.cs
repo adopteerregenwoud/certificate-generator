@@ -8,6 +8,16 @@ public class CertificateGenerator
     private readonly Stream _certificateTemplate;
     private readonly SKTypeface _robotoSlabTypeface;
 
+    private const int rightMarginSquareMeters = 60;
+    private const int topMarginSquareMeters = 40;
+    private const int fontSizeSquareMeters = 330;
+    private const int leftMarginName = 810;
+    private const int bottomMarginName = 750;
+    private const int fontSizeName = 175;
+    private const int leftMarginDate = leftMarginName;
+    private const int bottomMarginDate = 460;
+    private const int fontSizeDate = 50;
+
     public CertificateGenerator(Stream certificateTemplate)
     {
         _certificateTemplate = certificateTemplate;
@@ -29,7 +39,6 @@ public class CertificateGenerator
         using var inputStream = new SKManagedStream(_certificateTemplate);
         using var bitmap = SKBitmap.Decode(inputStream);
         using var canvas = new SKCanvas(bitmap);
-        var font = SKTypeface.FromFamilyName("Arial");
 
         var paint = new SKPaint
         {
@@ -39,20 +48,59 @@ public class CertificateGenerator
             Typeface = _robotoSlabTypeface
         };
 
-        var point = new SKPoint(100, 100);
-        canvas.DrawText($"Name: {adoptionRecord.Name}", point, paint);
-
-        point.Y += 50;
-        canvas.DrawText($"Square Meters: {adoptionRecord.SquareMeters}", point, paint);
-
-        point.Y += 50;
-        canvas.DrawText($"Date: {adoptionRecord.Date}", point, paint);
-
-        point.Y += 50;
-        canvas.DrawText($"Language: {adoptionRecord.Language}", point, paint);
+        RenderSquareMeters(canvas, bitmap, adoptionRecord.SquareMeters);
+        RenderName(canvas, bitmap, adoptionRecord.Name);
+        RenderDate(canvas, bitmap, adoptionRecord.Date);
 
         SKData outputImageData = CreatePngFromBitmap(bitmap);
         return CreateMemoryStreamFromImageData(outputImageData);
+    }
+
+    private void RenderSquareMeters(SKCanvas canvas, SKBitmap bitmap, int squareMeters)
+    {
+        var paint = new SKPaint
+        {
+            Color = SKColors.White,
+            TextSize = fontSizeSquareMeters,
+            IsAntialias = true,
+            Typeface = _robotoSlabTypeface
+        };
+
+        string text = $"{squareMeters}m²";
+        float textSize = paint.MeasureText(text);
+
+        var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - textSize, topMarginSquareMeters + fontSizeSquareMeters);
+        canvas.DrawText(text, point, paint);
+    }
+
+    private void RenderName(SKCanvas canvas, SKBitmap bitmap, string name)
+    {
+        var paint = new SKPaint
+        {
+            Color = SKColors.White,
+            TextSize = fontSizeName,
+            IsAntialias = true,
+            Typeface = _robotoSlabTypeface
+        };
+
+        var point = new SKPoint(leftMarginName, bitmap.Height - bottomMarginName);
+        canvas.DrawText(name, point, paint);
+    }
+
+    private void RenderDate(SKCanvas canvas, SKBitmap bitmap, DateOnly date)
+    {
+        var paint = new SKPaint
+        {
+            Color = SKColors.White,
+            TextSize = fontSizeDate,
+            IsAntialias = true,
+            Typeface = _robotoSlabTypeface
+        };
+
+        string text = $"{date:dd-MM-yyy}";
+
+        var point = new SKPoint(leftMarginDate, bitmap.Height - bottomMarginDate);
+        canvas.DrawText(text, point, paint);
     }
 
     private static SKData CreatePngFromBitmap(SKBitmap bitmap)
