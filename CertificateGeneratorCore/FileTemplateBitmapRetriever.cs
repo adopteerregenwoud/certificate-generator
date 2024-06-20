@@ -5,6 +5,7 @@ namespace CertificateGeneratorCore;
 public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
 {
     private readonly SKBitmap _certificateTemplateBitmap;
+    private bool _disposed = false;
 
     private const int ExpectedWidth = 3507;
     private const int ExpectedHeight = 2480;
@@ -20,6 +21,11 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
 
     public SKBitmap Retrieve(int squareMeters, Language language)
     {
+        if (_disposed)
+        {
+            throw new ObjectDisposedException(nameof(FileTemplateBitmapRetriever));
+        }
+
         return _certificateTemplateBitmap;
     }
 
@@ -27,5 +33,29 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
     {
         using var inputStream = new SKManagedStream(certificateTemplateStream);
         return SKBitmap.Decode(inputStream);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _certificateTemplateBitmap.Dispose();
+            }
+
+            _disposed = true;
+        }
+    }
+
+    ~FileTemplateBitmapRetriever()
+    {
+        Dispose(false);
     }
 }
