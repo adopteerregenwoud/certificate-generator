@@ -29,15 +29,21 @@ internal class Program
 
     private static void GenerateCertificate(AdoptionRecord adoptionRecord, CertificateGenerator certificateGenerator, string outputDirectory)
     {
-        Stream resultStream = certificateGenerator.Generate(adoptionRecord);
+        CertificateGenerator.Result result = certificateGenerator.Generate(adoptionRecord);
 
         string fileBasename = GenerateFileBasename(adoptionRecord);
 
         string outputPath = Path.Combine(outputDirectory, $"{fileBasename}.png");
         Console.WriteLine($"    Writing full-size PNG to {outputPath}...");
         using var outputStream = File.Create(outputPath);
-        resultStream.Seek(0, SeekOrigin.Begin);
-        resultStream.CopyTo(outputStream);
+        result.FullSizePngStream.Seek(0, SeekOrigin.Begin);
+        result.FullSizePngStream.CopyTo(outputStream);
+
+        outputPath = Path.Combine(outputDirectory, $"{fileBasename}.jpg");
+        Console.WriteLine($"    Writing 3MB JPG to {outputPath}...");
+        using var outputStreamJpg = File.Create(outputPath);
+        result.Jpg3MbStream.Seek(0, SeekOrigin.Begin);
+        result.Jpg3MbStream.CopyTo(outputStreamJpg);
     }
 
     private static string GenerateFileBasename(AdoptionRecord adoptionRecord)

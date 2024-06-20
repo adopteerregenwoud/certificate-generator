@@ -13,10 +13,11 @@ public class CertificateGeneratorTests
         var sut = new CertificateGenerator(templateStream);
 
         // Act
-        Stream generatedStream = sut.Generate(adoptionRecord);
+        CertificateGenerator.Result result = sut.Generate(adoptionRecord);
 
         // Assert
-        Assert.That(AreAllPixelsBlack(generatedStream), Is.False);
+        Assert.That(AreAllPixelsBlack(result.FullSizePngStream), Is.False);
+        Assert.That(AreAllPixelsBlack(result.Jpg3MbStream), Is.False);
     }
 
     [Test]
@@ -26,13 +27,14 @@ public class CertificateGeneratorTests
         var adoptionRecord = new AdoptionRecord("Janssen", 20, new DateOnly(2024, 6, 19), Language.Dutch);
         using Stream templateStream = ImageUtils.CreateBlackTemplate();
         var sut = new CertificateGenerator(templateStream);
-        Stream generatedStream = sut.Generate(adoptionRecord);
+        CertificateGenerator.Result result = sut.Generate(adoptionRecord);
 
         // Act
-        generatedStream = sut.Generate(adoptionRecord);
+        result = sut.Generate(adoptionRecord);
 
         // Assert
-        Assert.That(AreAllPixelsBlack(generatedStream), Is.False);
+        Assert.That(AreAllPixelsBlack(result.FullSizePngStream), Is.False);
+        Assert.That(AreAllPixelsBlack(result.Jpg3MbStream), Is.False);
     }
 
     private static bool AreAllPixelsBlack(Stream memoryStream)

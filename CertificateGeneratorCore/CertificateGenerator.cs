@@ -5,6 +5,12 @@ namespace CertificateGeneratorCore;
 
 public class CertificateGenerator
 {
+    public class Result
+    {
+        public required Stream FullSizePngStream { get; set; }
+        public required Stream Jpg3MbStream { get; set; }
+    }
+
     private readonly SKBitmap _certificateTemplateBitmap;
     private readonly SKTypeface _robotoSlabTypefaceMedium;
     private readonly SKTypeface _robotoSlabTypefaceRegular;
@@ -45,7 +51,7 @@ public class CertificateGenerator
         return SKTypeface.FromStream(fontStream);
     }
 
-    public Stream Generate(AdoptionRecord adoptionRecord)
+    public Result Generate(AdoptionRecord adoptionRecord)
     {
         using var bitmap = _certificateTemplateBitmap.Copy();
         using var canvas = new SKCanvas(bitmap);
@@ -54,8 +60,14 @@ public class CertificateGenerator
         RenderName(canvas, bitmap, adoptionRecord.Name);
         RenderDate(canvas, bitmap, adoptionRecord.Date);
 
-        SKData outputImageData = CreatePngFromBitmap(bitmap);
-        return CreateMemoryStreamFromImageData(outputImageData);
+        SKData imageDataPng = CreatePngFromBitmap(bitmap);
+        SKData imageDataJpg = CreateJpgFromBitmap(bitmap);
+
+        return new Result
+        {
+            FullSizePngStream = CreateMemoryStreamFromImageData(imageDataPng),
+            Jpg3MbStream = CreateMemoryStreamFromImageData(imageDataJpg)
+        };
     }
 
     private void RenderSquareMeters(SKCanvas canvas, SKBitmap bitmap, int squareMeters)
@@ -65,13 +77,19 @@ public class CertificateGenerator
             Color = SKColors.White,
             TextSize = fontSizeSquareMeters,
             IsAntialias = true,
-            Typeface = _robotoSlabTypefaceMedium
+            Typeface = _robotoSlabTypefaceRegular
         };
 
-        string text = $"{squareMeters}m²";
+        string m2Text = $"m²";
+        float m2TextSize = paint.MeasureText(m2Text);
+        var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize, topMarginSquareMeters + fontSizeSquareMeters);
+        canvas.DrawText(m2Text, point, paint);
+
+        paint.Typeface = _robotoSlabTypefaceMedium;
+        string text = $"{squareMeters}";
         float textSize = paint.MeasureText(text);
 
-        var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - textSize, topMarginSquareMeters + fontSizeSquareMeters);
+        point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize, topMarginSquareMeters + fontSizeSquareMeters);
         canvas.DrawText(text, point, paint);
     }
 
@@ -109,6 +127,12 @@ public class CertificateGenerator
     {
         using var image = SKImage.FromBitmap(bitmap);
         return image.Encode(SKEncodedImageFormat.Png, 100);
+    }
+
+    private static SKData CreateJpgFromBitmap(SKBitmap bitmap)
+    {
+        using var image = SKImage.FromBitmap(bitmap);
+        return image.Encode(SKEncodedImageFormat.Jpeg, 97);
     }
 
     private static MemoryStream CreateMemoryStreamFromImageData(SKData imageData)
