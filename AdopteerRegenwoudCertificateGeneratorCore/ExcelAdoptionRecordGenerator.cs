@@ -3,16 +3,16 @@ using EPPlus.DataExtractor;
 
 namespace AdopteerRegenwoud.CertificateGeneratorCore;
 
-public class ExcelAdoptionRecordGenerator : IAdoptionRecordGenerator
+public class ExcelAdoptionRecordsParse : IAdoptionRecordsParser
 {
     private readonly Stream _stream;
 
-    public ExcelAdoptionRecordGenerator(Stream stream)
+    public ExcelAdoptionRecordsParse(Stream stream)
     {
         this._stream = stream;
     }
 
-    public IEnumerable<AdoptionRecord> Generate()
+    public IEnumerable<AdoptionRecord> Parse()
     {
         using (var ep = new ExcelPackage(_stream))
         {

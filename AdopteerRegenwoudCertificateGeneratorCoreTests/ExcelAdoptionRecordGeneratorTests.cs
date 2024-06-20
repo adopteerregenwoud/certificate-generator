@@ -1,6 +1,6 @@
 namespace AdopteerRegenwoudCertificateGeneratorCoreTests;
 
-public class ExcelAdoptionRecordGeneratorTests
+public class ExcelAdoptionRecordsParserTests
 {
     [Test]
     public void TestGenerate()
@@ -8,10 +8,10 @@ public class ExcelAdoptionRecordGeneratorTests
         // Arrange
         var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "example.xlsx");
         var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-        var sut = new ExcelAdoptionRecordGenerator(stream);
+        var sut = new ExcelAdoptionRecordsParse(stream);
 
         // Act
-        List<AdoptionRecord> actualRecords = sut.Generate().ToList();
+        List<AdoptionRecord> actualRecords = sut.Parse().ToList();
 
         // Assert
         var expectedRecords = new List<AdoptionRecord>
