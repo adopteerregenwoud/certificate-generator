@@ -37,35 +37,6 @@ public class CertificateGeneratorTests
         Assert.That(AreAllPixelsBlack(result.Jpg3MbStream), Is.False);
     }
 
-    [TestCase("hello", "hello", null)]
-    [TestCase("hello world", "hello world", null)]
-    [TestCase("Jane Smith en ook nog vele anderen", "Jane Smith en ook", "nog vele anderen")]
-    public void TestWrapText(string original, string firstWrappedLine, string? secondWrappedLine)
-    {
-        // Arrange
-        using Stream templateStream = ImageUtils.CreateBlackTemplate();
-        var sut = new CertificateGenerator(templateStream);
-        var paint = new SKPaint
-        {
-            Color = SKColors.White,
-            TextSize = CertificateGenerator.FontSizeName,
-            IsAntialias = true,
-            Typeface = sut.RobotoSlabTypefaceMedium
-        };
-
-        // Act
-        IList<string> actual = CertificateGenerator.WrapText(original, paint, CertificateGenerator.MaxNameWidth);
-
-        // Assert
-        Assert.That(actual.Count, Is.GreaterThanOrEqualTo(1));
-        Assert.That(actual.Count, Is.LessThanOrEqualTo(2));
-        Assert.That(actual[0], Is.EqualTo(firstWrappedLine));
-        if (actual.Count > 1)
-        {
-            Assert.That(actual[1], Is.EqualTo(secondWrappedLine));
-        }
-    }
-
     private static bool AreAllPixelsBlack(Stream memoryStream)
     {
         memoryStream.Position = 0;

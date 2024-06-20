@@ -111,7 +111,7 @@ public class CertificateGenerator
             Typeface = RobotoSlabTypefaceMedium
         };
 
-        IList<string> wrappedLines = WrapText(name, paint, MaxNameWidth);
+        IList<string> wrappedLines = TextWrapper.WrapText(name, paint, MaxNameWidth);
 
         int firstLineYOffset = 0;
         if (wrappedLines.Count == 1)
@@ -133,51 +133,6 @@ public class CertificateGenerator
         }
     }
 
-    public static IList<string> WrapText(string text, SKPaint paint, int maxWidth)
-    {
-        float width = paint.MeasureText(text);
-        if (width <= maxWidth)
-        {
-            return [text];
-        }
-
-        List<string> wrappedLines = [];
-        string[] parts = text.Split(' ');
-        int nrParts = parts.Length;
-        int currentPart = 0;
-
-        while (currentPart < nrParts)
-        {
-            string currentLine = parts[currentPart];
-
-            if (currentPart == nrParts - 1)
-            {
-                wrappedLines.Add(currentLine);
-                break;
-            }
-
-            string nextPart = parts[currentPart + 1];
-            string textToCheck = $"{currentLine} {nextPart}";
-            while (paint.MeasureText(textToCheck) <= maxWidth)
-            {
-                currentLine = textToCheck;
-                currentPart++;
-
-                if (currentPart == nrParts - 1)
-                {
-                    break;
-                }
-
-                nextPart = parts[currentPart + 1];
-                textToCheck = $"{currentLine} {nextPart}";
-            }
-
-            wrappedLines.Add(currentLine);
-            currentPart++;
-        }
-
-        return wrappedLines;
-    }
 
     private void RenderDate(SKCanvas canvas, SKBitmap bitmap, DateOnly date)
     {
