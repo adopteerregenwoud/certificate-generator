@@ -11,7 +11,7 @@ public class TextWrapperTests
     {
         // Arrange
         using Stream templateStream = ImageUtils.CreateBlackTemplate();
-        var sut = new CertificateGenerator(templateStream);
+        var sut = new CertificateGenerator(new DummyTemplateBitmapReceiver());
         var paint = new SKPaint
         {
             Color = SKColors.White,

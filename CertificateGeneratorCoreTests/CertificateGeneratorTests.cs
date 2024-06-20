@@ -4,13 +4,13 @@ namespace CertificateGeneratorCoreTests;
 
 public class CertificateGeneratorTests
 {
+
     [Test]
     public void TestGenerateOne()
     {
         // Arrange
         var adoptionRecord = new AdoptionRecord("Janssen", 20, new DateOnly(2024, 6, 19), Language.Dutch);
-        using Stream templateStream = ImageUtils.CreateBlackTemplate();
-        var sut = new CertificateGenerator(templateStream);
+        var sut = new CertificateGenerator(new DummyTemplateBitmapReceiver());
 
         // Act
         CertificateGenerator.Result result = sut.Generate(adoptionRecord);
@@ -26,7 +26,7 @@ public class CertificateGeneratorTests
         // Arrange
         var adoptionRecord = new AdoptionRecord("Janssen", 20, new DateOnly(2024, 6, 19), Language.Dutch);
         using Stream templateStream = ImageUtils.CreateBlackTemplate();
-        var sut = new CertificateGenerator(templateStream);
+        var sut = new CertificateGenerator(new DummyTemplateBitmapReceiver());
         CertificateGenerator.Result result = sut.Generate(adoptionRecord);
 
         // Act

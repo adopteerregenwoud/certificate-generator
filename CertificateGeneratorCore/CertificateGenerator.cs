@@ -11,12 +11,10 @@ public class CertificateGenerator
         public required Stream Jpg3MbStream { get; set; }
     }
 
-    private readonly SKBitmap _certificateTemplateBitmap;
+    private readonly ITemplateBitmapRetriever _templateBitmapRetriever;
     public SKTypeface RobotoSlabTypefaceMedium { get; private set; }
     private readonly SKTypeface _robotoSlabTypefaceRegular;
 
-    private const int expectedWidth = 3507;
-    private const int expectedHeight = 2480;
     private const int rightMarginSquareMeters = 60;
     private const int topMarginSquareMeters = 0;
     private const int fontSizeSquareMeters = 330;
@@ -28,22 +26,12 @@ public class CertificateGenerator
     private const int bottomMarginDate = 460;
     private const int fontSizeDate = 50;
 
-    public CertificateGenerator(Stream certificateTemplateStream)
+    public CertificateGenerator(ITemplateBitmapRetriever templateBitmapRetriever)
     {
-        _certificateTemplateBitmap = ReadBitmapFromStream(certificateTemplateStream);
-        if (_certificateTemplateBitmap.Width != expectedWidth || _certificateTemplateBitmap.Height != expectedHeight)
-        {
-            throw new InvalidDataException($"Template image is not {expectedWidth}x{expectedHeight}");
-        }
+        _templateBitmapRetriever = templateBitmapRetriever;
 
         RobotoSlabTypefaceMedium = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Medium.ttf");
         _robotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
-    }
-
-    private static SKBitmap ReadBitmapFromStream(Stream certificateTemplateStream)
-    {
-        using var inputStream = new SKManagedStream(certificateTemplateStream);
-        return SKBitmap.Decode(inputStream);
     }
 
     private static SKTypeface ReadFontFromEmbeddedResource(string resourceName)
@@ -61,7 +49,7 @@ public class CertificateGenerator
 
     public Result Generate(AdoptionRecord adoptionRecord)
     {
-        using var bitmap = _certificateTemplateBitmap.Copy();
+        using var bitmap = _templateBitmapRetriever.Retrieve(adoptionRecord.SquareMeters, adoptionRecord.Language).Copy();
         using var canvas = new SKCanvas(bitmap);
 
         RenderSquareMeters(canvas, bitmap, adoptionRecord.SquareMeters);

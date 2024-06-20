@@ -4,6 +4,17 @@ namespace CertificateGeneratorCore;
 
 public static class ImageUtils
 {
+    public static SKBitmap CreateBlackBitmap()
+    {
+        var bitmap = new SKBitmap(3507, 2480);
+        using (var canvas = new SKCanvas(bitmap))
+        {
+            canvas.Clear(SKColors.Black);
+        }
+
+        return bitmap;
+    }
+
     public static MemoryStream CreateBlackTemplate()
     {
         using var bitmap = new SKBitmap(3507, 2480);
