@@ -6,10 +6,11 @@ namespace CertificateGeneratorCore;
 public class CertificateGenerator
 {
     private readonly SKBitmap _certificateTemplateBitmap;
-    private readonly SKTypeface _robotoSlabTypeface;
+    private readonly SKTypeface _robotoSlabTypefaceMedium;
+    private readonly SKTypeface _robotoSlabTypefaceRegular;
 
     private const int rightMarginSquareMeters = 60;
-    private const int topMarginSquareMeters = 40;
+    private const int topMarginSquareMeters = 0;
     private const int fontSizeSquareMeters = 330;
     private const int leftMarginName = 810;
     private const int bottomMarginName = 750;
@@ -21,7 +22,8 @@ public class CertificateGenerator
     public CertificateGenerator(Stream certificateTemplateStream)
     {
         _certificateTemplateBitmap = ReadBitmapFromStream(certificateTemplateStream);
-        _robotoSlabTypeface = ReadFontFromEmbeddedResource();
+        _robotoSlabTypefaceMedium = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Medium.ttf");
+        _robotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
     }
 
     private static SKBitmap ReadBitmapFromStream(Stream certificateTemplateStream)
@@ -30,10 +32,9 @@ public class CertificateGenerator
         return SKBitmap.Decode(inputStream);
     }
 
-    private static SKTypeface ReadFontFromEmbeddedResource()
+    private static SKTypeface ReadFontFromEmbeddedResource(string resourceName)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "CertificateGeneratorCore.fonts.RobotoSlab-VariableFont_wght.ttf";
 
         using Stream? fontStream = assembly.GetManifestResourceStream(resourceName);
         if (fontStream == null)
@@ -64,7 +65,7 @@ public class CertificateGenerator
             Color = SKColors.White,
             TextSize = fontSizeSquareMeters,
             IsAntialias = true,
-            Typeface = _robotoSlabTypeface
+            Typeface = _robotoSlabTypefaceMedium
         };
 
         string text = $"{squareMeters}m²";
@@ -81,7 +82,7 @@ public class CertificateGenerator
             Color = SKColors.White,
             TextSize = fontSizeName,
             IsAntialias = true,
-            Typeface = _robotoSlabTypeface
+            Typeface = _robotoSlabTypefaceMedium
         };
 
         var point = new SKPoint(leftMarginName, bitmap.Height - bottomMarginName);
@@ -95,7 +96,7 @@ public class CertificateGenerator
             Color = SKColors.White,
             TextSize = fontSizeDate,
             IsAntialias = true,
-            Typeface = _robotoSlabTypeface
+            Typeface = _robotoSlabTypefaceRegular
         };
 
         string text = $"{date:dd-MM-yyy}";
