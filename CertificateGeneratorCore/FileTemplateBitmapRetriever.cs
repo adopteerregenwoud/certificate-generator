@@ -2,6 +2,15 @@ using SkiaSharp;
 
 namespace CertificateGeneratorCore;
 
+/// <summary>
+/// Retrieves template bitmaps by reading png files from the file system.
+/// Input is a directory path. Within this directory these files should be present:
+/// 1-dutch.png
+/// 1-english.png
+/// 20-dutch.png
+/// 20-english.png
+/// TODO: add more
+/// </summary>
 public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
 {
     private readonly SKBitmap _certificateTemplateBitmap;
