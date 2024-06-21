@@ -15,9 +15,19 @@ public class CertificateGenerator
     public SKTypeface RobotoSlabTypefaceMedium { get; private set; }
     private readonly SKTypeface _robotoSlabTypefaceRegular;
 
+    private readonly Dictionary<int, SKColor> _areaColors = new()
+    {
+        [1] = new SKColor(196, 217, 117, 255),
+        [20] = SKColors.White
+    };
+    private readonly Dictionary<int, int> _areaFontsizes = new()
+    {
+        [1] = 430,
+        [20] = 330
+    };
+
     private const int rightMarginSquareMeters = 60;
     private const int topMarginSquareMeters = 0;
-    private const int fontSizeSquareMeters = 330;
     private const int leftMarginName = 810;
     private const int bottomMarginName = 750;
     public const int MaxNameWidth = 1670;
@@ -68,24 +78,27 @@ public class CertificateGenerator
 
     private void RenderSquareMeters(SKCanvas canvas, SKBitmap bitmap, int squareMeters)
     {
+        SKColor textColor = _areaColors.Last(kv => kv.Key <= squareMeters).Value;
+        int fontSize = _areaFontsizes.Last(kv => kv.Key <= squareMeters).Value;
+
         var paint = new SKPaint
         {
-            Color = SKColors.White,
-            TextSize = fontSizeSquareMeters,
+            Color = textColor,
+            TextSize = fontSize,
             IsAntialias = true,
             Typeface = _robotoSlabTypefaceRegular
         };
 
         string m2Text = $"m²";
         float m2TextSize = paint.MeasureText(m2Text);
-        var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize, topMarginSquareMeters + fontSizeSquareMeters);
+        var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize, topMarginSquareMeters + fontSize);
         canvas.DrawText(m2Text, point, paint);
 
         paint.Typeface = RobotoSlabTypefaceMedium;
         string text = $"{squareMeters}";
         float textSize = paint.MeasureText(text);
 
-        point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize, topMarginSquareMeters + fontSizeSquareMeters);
+        point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize, topMarginSquareMeters + fontSize);
         canvas.DrawText(text, point, paint);
     }
 

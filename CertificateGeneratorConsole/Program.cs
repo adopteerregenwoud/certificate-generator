@@ -6,17 +6,16 @@ internal class Program
     {
         if (args.Length != 3)
         {
-            Console.WriteLine("Usage: CertificateGeneratorConsole <path to excel> <path to template> <output directory>");
+            Console.WriteLine("Usage: CertificateGeneratorConsole <path to excel> <template directory> <output directory>");
             Environment.Exit(1);
         }
 
         string excelPath = args[0];
-        string templatePath = args[1];
+        string templateDirectory = args[1];
         string outputDirectory = args[2];
 
-        Console.WriteLine($"Reading certificate template from {templatePath}...");
-        Stream template = new FileStream(templatePath, FileMode.Open, FileAccess.Read);
-        using var templateBitmapRetriever = new FileTemplateBitmapRetriever(template);
+        Console.WriteLine($"Reading certificate templates from {templateDirectory}...");
+        using var templateBitmapRetriever = new FileTemplateBitmapRetriever(templateDirectory);
         var certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
 
         Console.WriteLine($"Reading records from {excelPath}...");

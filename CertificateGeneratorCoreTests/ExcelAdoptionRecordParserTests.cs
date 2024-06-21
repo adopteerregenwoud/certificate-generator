@@ -16,7 +16,7 @@ public class ExcelAdoptionRecordsParserTests
         // Assert
         var expectedRecords = new List<AdoptionRecord>
         {
-            new ("John Doe", 150,   new DateOnly(2023, 06, 01), Language.English),
+            new ("John Doe", 3, new DateOnly(2023, 06, 01), Language.English),
             new ("Jane Smith en ook nog vele anderen", 200, new DateOnly(2023, 06, 02), Language.Dutch),
             new ("Max Mustermann", 180, new DateOnly(2023, 06, 03), Language.English),
             new ("María García", 5, new DateOnly(2023, 06, 04), Language.Dutch),

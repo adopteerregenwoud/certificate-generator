@@ -13,19 +13,51 @@ namespace CertificateGeneratorCore;
 /// </summary>
 public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
 {
-    private readonly SKBitmap _certificateTemplateBitmap;
+    private readonly SKBitmap _fallbackCertificateTemplateBitmap;
+
+    /// <summary>
+    /// This will store the template bitmap for a specific language & area combination.
+    /// </summary>
+    private readonly Dictionary<Language, Dictionary<int, SKBitmap>> _certificateTemplateBitmaps = new()
+    {
+        [Language.Dutch] = [],
+        [Language.English] = []
+    };
+
+    /// <summary>
+    /// Supported languages.
+    /// </summary>
+    private readonly List<Language> _languages = [Language.Dutch, Language.English];
+
+    /// <summary>
+    /// Supported areas.
+    /// </summary>
+    private readonly List<int> _areasM2 = [1, 20];
+
     private bool _disposed = false;
 
     private const int ExpectedWidth = 3507;
     private const int ExpectedHeight = 2480;
 
-    public FileTemplateBitmapRetriever(Stream certificateTemplateStream)
+    public FileTemplateBitmapRetriever(string templateDirectoryPath)
     {
-        _certificateTemplateBitmap = ReadBitmapFromStream(certificateTemplateStream);
-        if (_certificateTemplateBitmap.Width != ExpectedWidth || _certificateTemplateBitmap.Height != ExpectedHeight)
+        foreach (Language language in _languages)
         {
-            throw new InvalidDataException($"Template image is not {ExpectedWidth}x{ExpectedHeight}");
+            foreach (int areaM2 in _areasM2)
+            {
+                string templatePath = Path.Combine(templateDirectoryPath, $"{areaM2}-{language.ToString().ToLower()}.png");
+                Console.WriteLine($"  Reading template bitmap for {areaM2}m2 in {language} from {templatePath}...");
+                using var stream = new FileStream(templatePath, FileMode.Open, FileAccess.Read);
+                SKBitmap templateBitmap = ReadBitmapFromStream(stream);
+                if (templateBitmap.Width != ExpectedWidth || templateBitmap.Height != ExpectedHeight)
+                {
+                    throw new InvalidDataException($"Template image {templatePath} is not {ExpectedWidth}x{ExpectedHeight}");
+                }
+                _certificateTemplateBitmaps[language][areaM2] = templateBitmap;
+            }
         }
+
+        _fallbackCertificateTemplateBitmap = _certificateTemplateBitmaps[Language.Dutch][20];
     }
 
     public SKBitmap Retrieve(int squareMeters, Language language)
@@ -35,7 +67,7 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
             throw new ObjectDisposedException(nameof(FileTemplateBitmapRetriever));
         }
 
-        return _certificateTemplateBitmap;
+        return GetBitmap(squareMeters, language);
     }
 
     private static SKBitmap ReadBitmapFromStream(Stream certificateTemplateStream)
@@ -56,7 +88,7 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
         {
             if (disposing)
             {
-                _certificateTemplateBitmap.Dispose();
+                _fallbackCertificateTemplateBitmap.Dispose();
             }
 
             _disposed = true;
@@ -66,5 +98,16 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
     ~FileTemplateBitmapRetriever()
     {
         Dispose(false);
+    }
+
+    private SKBitmap GetBitmap(int areaM2, Language language)
+    {
+        if (_certificateTemplateBitmaps.ContainsKey(language))
+        {
+            int templateAreaM2 = _areasM2.Last(a => a <= areaM2);
+            return _certificateTemplateBitmaps[language][templateAreaM2];
+        }
+
+        return _fallbackCertificateTemplateBitmap;
     }
 }
