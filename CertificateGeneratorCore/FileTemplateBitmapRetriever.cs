@@ -32,7 +32,7 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
     /// <summary>
     /// Supported areas.
     /// </summary>
-    private readonly List<int> _areasM2 = [1, 20];
+    private readonly List<int> _areasM2 = [1, 4, 10, 20];
 
     private bool _disposed = false;
 

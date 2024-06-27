@@ -18,11 +18,15 @@ public class CertificateGenerator
     private readonly Dictionary<int, SKColor> _areaColors = new()
     {
         [1] = new SKColor(196, 217, 117, 255),
+        [4] = SKColors.White,
+        [10] = new SKColor(196, 217, 117, 255),
         [20] = SKColors.White
     };
     private readonly Dictionary<int, int> _areaFontsizes = new()
     {
         [1] = 430,
+        [4] = 430,
+        [10] = 430,
         [20] = 330
     };
 
