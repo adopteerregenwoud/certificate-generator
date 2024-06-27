@@ -18,7 +18,7 @@ public class ExcelAdoptionRecordsParser : IAdoptionRecordsParser
         {
             ExcelWorksheet ws = ep.Workbook.Worksheets.First();
             int headerRow = 1;
-            int lastRow = ws.Dimension.End.Row;
+            int lastRow = GetLastRowWithData(ws);
 
             string columnName = ws.FindColumnName(headerRow, "Naam");
             string columnSquareMeters = ws.FindColumnName(headerRow, "Aantal m2");
@@ -32,5 +32,22 @@ public class ExcelAdoptionRecordsParser : IAdoptionRecordsParser
                 .WithProperty(p => p.Language, columnLanguage, cell => Enum.Parse<Language>((string)cell))
                 .GetData(headerRow + 1, lastRow));
         }
+    }
+
+    private static int GetLastRowWithData(ExcelWorksheet ws)
+    {
+        int row = 1;
+        while (row <= ws.Dimension.End.Row)
+        {
+            string? value = ws.GetValue<string?>(row, 1);
+            if (value == null || string.IsNullOrEmpty(value))
+            {
+                return row - 1;
+            }
+
+            row++;
+        }
+
+        return ws.Dimension.End.Row;
     }
 }
