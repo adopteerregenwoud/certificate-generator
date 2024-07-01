@@ -22,11 +22,11 @@ public class CertificateGenerator
         [10] = new SKColor(196, 217, 117, 255),
         [20] = SKColors.White,
         [50] = new SKColor(196, 217, 117, 255),
-        [100] = new SKColor(127, 141, 77, 255)
+        [100] = new SKColor(123, 103, 91, 255)
     };
     private readonly Dictionary<int, int> _areaFontsizes = new()
     {
-        [1] = 430,
+        [1] = 390,
         [4] = 430,
         [10] = 430,
         [20] = 360,
@@ -43,6 +43,7 @@ public class CertificateGenerator
     private const int leftMarginDate = leftMarginName;
     private const int bottomMarginDate = 460;
     private const int fontSizeDate = 50;
+    private const int jpgQuality = 94;
 
     public CertificateGenerator(ITemplateBitmapRetriever templateBitmapRetriever)
     {
@@ -86,6 +87,8 @@ public class CertificateGenerator
 
     private void RenderSquareMeters(SKCanvas canvas, SKBitmap bitmap, int squareMeters)
     {
+        const int dropShadowDelta = 15;
+
         SKColor textColor = _areaColors.Last(kv => kv.Key <= squareMeters).Value;
         int fontSize = _areaFontsizes.Last(kv => kv.Key <= squareMeters).Value;
 
@@ -96,10 +99,20 @@ public class CertificateGenerator
             IsAntialias = true,
             Typeface = _robotoSlabTypefaceRegular
         };
+        var paintDropShadow = new SKPaint
+        {
+            Color = SKColors.Black,
+            TextSize = fontSize,
+            IsAntialias = true,
+            Typeface = _robotoSlabTypefaceRegular
+        };
 
         string m2Text = $"m²";
         float m2TextSize = paint.MeasureText(m2Text);
         var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize, topMarginSquareMeters + fontSize);
+        var pointDropShadow = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize + dropShadowDelta,
+                                          topMarginSquareMeters + fontSize + dropShadowDelta);
+        canvas.DrawText(m2Text, pointDropShadow, paintDropShadow);
         canvas.DrawText(m2Text, point, paint);
 
         paint.Typeface = RobotoSlabTypefaceMedium;
@@ -107,6 +120,9 @@ public class CertificateGenerator
         float textSize = paint.MeasureText(text);
 
         point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize, topMarginSquareMeters + fontSize);
+        pointDropShadow = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize + dropShadowDelta,
+                                      topMarginSquareMeters + fontSize + dropShadowDelta);
+        canvas.DrawText(text, pointDropShadow, paintDropShadow);
         canvas.DrawText(text, point, paint);
     }
 
@@ -168,7 +184,7 @@ public class CertificateGenerator
     private static SKData CreateJpgFromBitmap(SKBitmap bitmap)
     {
         using var image = SKImage.FromBitmap(bitmap);
-        return image.Encode(SKEncodedImageFormat.Jpeg, 97);
+        return image.Encode(SKEncodedImageFormat.Jpeg, jpgQuality);
     }
 
     private static MemoryStream CreateMemoryStreamFromImageData(SKData imageData)
