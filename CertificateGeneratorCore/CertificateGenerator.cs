@@ -116,6 +116,7 @@ public class CertificateGenerator
         canvas.DrawText(m2Text, point, paint);
 
         paint.Typeface = RobotoSlabTypefaceMedium;
+        paintDropShadow.Typeface = RobotoSlabTypefaceMedium;
         string text = $"{squareMeters}";
         float textSize = paint.MeasureText(text);
 
