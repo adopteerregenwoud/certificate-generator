@@ -20,14 +20,18 @@ public class CertificateGenerator
         [1] = new SKColor(196, 217, 117, 255),
         [4] = SKColors.White,
         [10] = new SKColor(196, 217, 117, 255),
-        [20] = SKColors.White
+        [20] = SKColors.White,
+        [50] = new SKColor(196, 217, 117, 255),
+        [100] = new SKColor(127, 141, 77, 255)
     };
     private readonly Dictionary<int, int> _areaFontsizes = new()
     {
         [1] = 430,
         [4] = 430,
         [10] = 430,
-        [20] = 330
+        [20] = 360,
+        [50] = 430,
+        [100] = 430
     };
 
     private const int rightMarginSquareMeters = 60;
