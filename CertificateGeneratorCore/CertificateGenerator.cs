@@ -88,43 +88,44 @@ public class CertificateGenerator
     private void RenderSquareMeters(SKCanvas canvas, SKBitmap bitmap, int squareMeters)
     {
         const int dropShadowDelta = 15;
+        const int dropShadowSigma = 15;
 
         SKColor textColor = _areaColors.Last(kv => kv.Key <= squareMeters).Value;
         int fontSize = _areaFontsizes.Last(kv => kv.Key <= squareMeters).Value;
 
-        var paint = new SKPaint
+        // We don't want the size of dropshadow to influence the location of the text.
+        // So we measure with a different paint than we actually draw.
+        var paintForMeasure = new SKPaint
         {
             Color = textColor,
             TextSize = fontSize,
             IsAntialias = true,
             Typeface = _robotoSlabTypefaceRegular
         };
-        var paintDropShadow = new SKPaint
+        var paintForRender = new SKPaint
         {
-            Color = SKColors.Black,
+            Color = textColor,
             TextSize = fontSize,
             IsAntialias = true,
-            Typeface = _robotoSlabTypefaceRegular
+            Typeface = _robotoSlabTypefaceRegular,
+            ImageFilter = SKImageFilter.CreateDropShadow(
+                dropShadowDelta, dropShadowDelta,
+                dropShadowSigma, dropShadowSigma,
+                new SKColor(0, 0, 0, 128))
         };
 
         string m2Text = $"m²";
-        float m2TextSize = paint.MeasureText(m2Text);
+        float m2TextSize = paintForMeasure.MeasureText(m2Text);
         var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize, topMarginSquareMeters + fontSize);
-        var pointDropShadow = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize + dropShadowDelta,
-                                          topMarginSquareMeters + fontSize + dropShadowDelta);
-        canvas.DrawText(m2Text, pointDropShadow, paintDropShadow);
-        canvas.DrawText(m2Text, point, paint);
+        canvas.DrawText(m2Text, point, paintForRender);
 
-        paint.Typeface = RobotoSlabTypefaceMedium;
-        paintDropShadow.Typeface = RobotoSlabTypefaceMedium;
+        paintForMeasure.Typeface = RobotoSlabTypefaceMedium;
+        paintForRender.Typeface = RobotoSlabTypefaceMedium;
         string text = $"{squareMeters}";
-        float textSize = paint.MeasureText(text);
+        float textSize = paintForMeasure.MeasureText(text);
 
         point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize, topMarginSquareMeters + fontSize);
-        pointDropShadow = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize + dropShadowDelta,
-                                      topMarginSquareMeters + fontSize + dropShadowDelta);
-        canvas.DrawText(text, pointDropShadow, paintDropShadow);
-        canvas.DrawText(text, point, paint);
+        canvas.DrawText(text, point, paintForRender);
     }
 
     private void RenderName(SKCanvas canvas, SKBitmap bitmap, string name)
