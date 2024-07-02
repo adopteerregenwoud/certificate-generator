@@ -9,6 +9,14 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        SetDefaultValues();
+    }
+
+    private void SetDefaultValues()
+    {
+        // Set the default date to today
+        DatePicker datePicker = this.FindControl<DatePicker>("DatePicker")!;
+        datePicker.SelectedDate = DateTimeOffset.Now;
     }
 
     private void OnGenerateCertificateClick(object sender, RoutedEventArgs e)

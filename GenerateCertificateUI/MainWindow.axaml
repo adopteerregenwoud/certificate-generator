@@ -7,11 +7,13 @@
         Title="Adopteer Regenwoud - Generate Certificate"
         Width="400"
         MaxWidth="400"
-        Height="250"
-        MaxHeight="250"
+        Height="320"
+        MaxHeight="320"
         CanResize="False"
         Icon="/Assets/logo.ico">
     <StackPanel Margin="20">
+        <TextBox x:Name="TemplateDirTextBox" Watermark="Template folder" Margin="0,0,0,10"/>
+        <TextBox x:Name="OutputDirTextBox" Watermark="Output folder" Margin="0,0,0,10"/>
         <TextBox x:Name="FullNameTextBox" Watermark="Full name" Margin="0,0,0,10"/>
         <TextBox x:Name="SquareMetersTextBox" Watermark="Square Meters" Margin="0,0,0,10"/>
         <DatePicker x:Name="DatePicker" Margin="0,0,0,10"/>
