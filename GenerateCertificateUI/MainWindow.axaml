@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="GenerateCertificateUI.MainWindow"
+        Title="Adopteer Regenwoud - Generate Certificate"
+        Width="400"
+        MaxWidth="400"
+        Height="250"
+        MaxHeight="250"
+        CanResize="False"
+        Icon="/Assets/logo.ico">
+    <StackPanel Margin="20">
+        <TextBox x:Name="FullNameTextBox" Watermark="Full name" Margin="0,0,0,10"/>
+        <TextBox x:Name="SquareMetersTextBox" Watermark="Square Meters" Margin="0,0,0,10"/>
+        <DatePicker x:Name="DatePicker" Margin="0,0,0,10"/>
+        <ComboBox x:Name="LanguageComboBox" SelectedIndex="0" Margin="0,0,0,10">
+            <ComboBoxItem Content="Dutch" />
+            <ComboBoxItem Content="English" />
+        </ComboBox>
+        <Button Content="Generate Certificate" Click="OnGenerateCertificateClick" />
+    </StackPanel>
+</Window>

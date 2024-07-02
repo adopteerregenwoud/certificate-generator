@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertificateGeneratorConsole
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateCertificate", "GenerateCertificate\GenerateCertificate.csproj", "{C9BCCEF9-49DD-4635-8FDE-1AAD4249EEAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateCertificateUI", "GenerateCertificateUI\GenerateCertificateUI.csproj", "{45ED9627-525F-4AD0-A8BE-BB82D8384BE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{C9BCCEF9-49DD-4635-8FDE-1AAD4249EEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9BCCEF9-49DD-4635-8FDE-1AAD4249EEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9BCCEF9-49DD-4635-8FDE-1AAD4249EEAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45ED9627-525F-4AD0-A8BE-BB82D8384BE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45ED9627-525F-4AD0-A8BE-BB82D8384BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45ED9627-525F-4AD0-A8BE-BB82D8384BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45ED9627-525F-4AD0-A8BE-BB82D8384BE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
