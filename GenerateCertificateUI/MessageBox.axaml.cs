@@ -13,7 +13,7 @@ public partial class MessageBox : Window
 
     public MessageBox(string message) : this()
     {
-        this.FindControl<TextBlock>("MessageTextBlock").Text = message;
+        this.FindControl<TextBlock>("MessageTextBlock")!.Text = message;
     }
 
     private void InitializeComponent()
