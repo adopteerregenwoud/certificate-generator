@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -26,9 +27,9 @@ public partial class MessageBox : Window
         Close();
     }
 
-    public static void Show(Window parent, string message)
+    public static async Task Show(Window parent, string message)
     {
         var msgBox = new MessageBox(message);
-        msgBox.ShowDialog(parent);
+        await msgBox.ShowDialog(parent);
     }
 }

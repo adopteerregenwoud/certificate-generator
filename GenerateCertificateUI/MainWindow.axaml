@@ -47,6 +47,6 @@
                 <ComboBoxItem Content="English" />
             </ComboBox>
         </Grid>
-        <Button Content="Generate Certificate" Click="OnGenerateCertificateClick" />
+        <Button Content="Generate Certificate" Click="OnGenerateCertificateClickAsync" />
     </StackPanel>
 </Window>

@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using CertificateGeneratorCore;
 
@@ -41,21 +43,38 @@ public partial class MainWindow : Window
         this.FindControl<TextBox>(OutputDirTextBoxName)!.Text = settings.OutputDir;
     }
 
-    private void OnGenerateCertificateClick(object sender, RoutedEventArgs e)
+    private async void OnGenerateCertificateClickAsync(object sender, RoutedEventArgs e)
     {
         ViewModel model = GetViewModel();
-        if (!ValidateViewModel(model))
+        if (!await ValidateViewModelAsync(model).ConfigureAwait(false))
         {
             return;
         }
 
-        AdoptionRecord adoptionRecord = CreateAdoptionRecordFromViewModel(model);
+        this.Cursor = new Cursor(StandardCursorType.Wait);
 
-        // Handle the certificate generation logic here
-        // For now, we'll just display a message box
-        MessageBox.Show(this, $"Certificate generated for {adoptionRecord.Name}!");
+        string certificateDir;
+        try
+        {
+            certificateDir = await Task.Run(() => GenerateCertificate(model));
+        }
+        finally
+        {
+            this.Cursor = Cursor.Default;
+        }
+
+        await MessageBox.Show(this, $"Certificate generated in {certificateDir}");
 
         SaveSettings(model);
+    }
+
+    private static string GenerateCertificate(ViewModel model)
+    {
+        AdoptionRecord adoptionRecord = CreateAdoptionRecordFromViewModel(model);
+
+        using var templateBitmapRetriever = new FileTemplateBitmapRetriever(model.TemplateDir!);
+        var certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
+        return CertificateUtils.GenerateCertificate(adoptionRecord, certificateGenerator, model.OutputDir!);
     }
 
     private ViewModel GetViewModel()
@@ -79,53 +98,53 @@ public partial class MainWindow : Window
         return model;
     }
 
-    private bool ValidateViewModel(ViewModel model)
+    private async Task<bool> ValidateViewModelAsync(ViewModel model)
     {
         if (string.IsNullOrEmpty(model.TemplateDir))
         {
-            MessageBox.Show(this, "Please fill in the template folder.");
+            await MessageBox.Show(this, "Please fill in the template folder.");
             return false;
         }
 
         if (!Directory.Exists(model.TemplateDir))
         {
-            MessageBox.Show(this, "Template folder does not exist.");
+            await MessageBox.Show(this, "Template folder does not exist.");
             return false;
         }
 
         if (string.IsNullOrEmpty(model.OutputDir))
         {
-            MessageBox.Show(this, "Please fill in the output folder.");
+            await MessageBox.Show(this, "Please fill in the output folder.");
             return false;
         }
 
         if (!Directory.Exists(model.OutputDir))
         {
-            MessageBox.Show(this, "Output folder does not exist.");
+            await MessageBox.Show(this, "Output folder does not exist.");
             return false;
         }
 
         if (string.IsNullOrEmpty(model.FullName))
         {
-            MessageBox.Show(this, "Please fill in a name.");
+            await MessageBox.Show(this, "Please fill in a name.");
             return false;
         }
 
         if (!int.TryParse(model.AreaM2Text, out int squareMeters))
         {
-            MessageBox.Show(this, "Please enter a valid number for square meters.");
+            await MessageBox.Show(this, "Please enter a valid number for square meters.");
             return false;
         }
 
         if (model.Date == null)
         {
-            MessageBox.Show(this, "Please select a date.");
+            await MessageBox.Show(this, "Please select a date.");
             return false;
         }
 
         if (model.LanguageText == null)
         {
-            MessageBox.Show(this, "Please select a language.");
+            await MessageBox.Show(this, "Please select a language.");
             return false;
         }
 

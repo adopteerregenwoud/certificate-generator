@@ -2,7 +2,14 @@ namespace CertificateGeneratorCore;
 
 public static class CertificateUtils
 {
-    public static void GenerateCertificate(AdoptionRecord adoptionRecord, CertificateGenerator certificateGenerator, string outputDirectory)
+    /// <summary>
+    /// Generate a certificate on the file system.
+    /// </summary>
+    /// <param name="adoptionRecord"></param>
+    /// <param name="certificateGenerator"></param>
+    /// <param name="outputDirectory"></param>
+    /// <returns>The directory that was created to contain the certificate files.</returns>
+    public static string GenerateCertificate(AdoptionRecord adoptionRecord, CertificateGenerator certificateGenerator, string outputDirectory)
     {
         CertificateGenerator.Result result = certificateGenerator.Generate(adoptionRecord);
 
@@ -21,6 +28,8 @@ public static class CertificateUtils
         using var outputStreamJpg = File.Create(outputPath);
         result.Jpg3MbStream.Seek(0, SeekOrigin.Begin);
         result.Jpg3MbStream.CopyTo(outputStreamJpg);
+
+        return dir;
     }
 
     private static string GenerateBasename(AdoptionRecord adoptionRecord)
