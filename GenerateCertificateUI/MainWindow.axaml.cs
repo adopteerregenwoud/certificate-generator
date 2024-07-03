@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using CertificateGeneratorCore;
@@ -32,9 +33,12 @@ public partial class MainWindow : Window
 
     private void SetDefaultValues()
     {
-        // Set the default date to today
         DatePicker datePicker = this.FindControl<DatePicker>(DateControlName)!;
         datePicker.SelectedDate = DateTimeOffset.Now;
+
+        Settings settings = SettingsService.LoadSettings();
+        this.FindControl<TextBox>(TemplateDirTextBoxName)!.Text = settings.TemplateDir;
+        this.FindControl<TextBox>(OutputDirTextBoxName)!.Text = settings.OutputDir;
     }
 
     private void OnGenerateCertificateClick(object sender, RoutedEventArgs e)
@@ -50,6 +54,8 @@ public partial class MainWindow : Window
         // Handle the certificate generation logic here
         // For now, we'll just display a message box
         MessageBox.Show(this, $"Certificate generated for {adoptionRecord.Name}!");
+
+        SaveSettings(model);
     }
 
     private ViewModel GetViewModel()
@@ -81,9 +87,21 @@ public partial class MainWindow : Window
             return false;
         }
 
+        if (!Directory.Exists(model.TemplateDir))
+        {
+            MessageBox.Show(this, "Template folder does not exist.");
+            return false;
+        }
+
         if (string.IsNullOrEmpty(model.OutputDir))
         {
             MessageBox.Show(this, "Please fill in the output folder.");
+            return false;
+        }
+
+        if (!Directory.Exists(model.OutputDir))
+        {
+            MessageBox.Show(this, "Output folder does not exist.");
             return false;
         }
 
@@ -123,5 +141,11 @@ public partial class MainWindow : Window
             Date = DateOnly.FromDateTime(model.Date.GetValueOrDefault().DateTime),
             Language = Enum.Parse<Language>(model.LanguageText!)
         };
+    }
+
+    private static void SaveSettings(ViewModel model)
+    {
+        Settings settings = new(model.TemplateDir!, model.OutputDir!);
+        SettingsService.SaveSettings(settings);
     }
 }
