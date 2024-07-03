@@ -15,7 +15,7 @@
         <TextBox x:Name="TemplateDirTextBox" Watermark="Template folder" Margin="0,0,0,10"/>
         <TextBox x:Name="OutputDirTextBox" Watermark="Output folder" Margin="0,0,0,10"/>
         <TextBox x:Name="FullNameTextBox" Watermark="Full name" Margin="0,0,0,10"/>
-        <TextBox x:Name="SquareMetersTextBox" Watermark="Square Meters" Margin="0,0,0,10"/>
+        <TextBox x:Name="SquareMetersTextBox" Watermark="Area (m2)" Margin="0,0,0,10"/>
         <DatePicker x:Name="DatePicker" Margin="0,0,0,10"/>
         <ComboBox x:Name="LanguageComboBox" SelectedIndex="0" Margin="0,0,0,10">
             <ComboBoxItem Content="Dutch" />
