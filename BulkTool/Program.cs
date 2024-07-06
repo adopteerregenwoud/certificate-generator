@@ -6,7 +6,7 @@ internal class Program
     {
         if (args.Length != 3)
         {
-            Console.WriteLine("Usage: CertificateGeneratorConsole <path to excel> <template directory> <output directory>");
+            Console.WriteLine("Usage: BulkTool <path to excel> <template directory> <output directory>");
             Environment.Exit(1);
         }
 
