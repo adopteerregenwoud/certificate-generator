@@ -4,3 +4,4 @@ obj
 /notes.txt
 .~lock*#
 .vagrant
+dist
