@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script only works on my machine.
+# TODO: change it so a release will be added to Github.
+
 set -euo pipefail
 
 APP_NAME=GenerateCertificateUI
