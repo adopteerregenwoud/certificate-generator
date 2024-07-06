@@ -16,7 +16,6 @@ public class CertificateGeneratorTests
         CertificateGenerator.Result result = sut.Generate(adoptionRecord);
 
         // Assert
-        Assert.That(AreAllPixelsBlack(result.FullSizePngStream), Is.False);
         Assert.That(AreAllPixelsBlack(result.Jpg3MbStream), Is.False);
     }
 
@@ -33,7 +32,6 @@ public class CertificateGeneratorTests
         result = sut.Generate(adoptionRecord);
 
         // Assert
-        Assert.That(AreAllPixelsBlack(result.FullSizePngStream), Is.False);
         Assert.That(AreAllPixelsBlack(result.Jpg3MbStream), Is.False);
     }
 

@@ -7,7 +7,6 @@ public class CertificateGenerator
 {
     public class Result
     {
-        public required Stream FullSizePngStream { get; set; }
         public required Stream Jpg3MbStream { get; set; }
     }
 
@@ -75,12 +74,10 @@ public class CertificateGenerator
         RenderName(canvas, bitmap, adoptionRecord.Name);
         RenderDate(canvas, bitmap, adoptionRecord.Date);
 
-        SKData imageDataPng = CreatePngFromBitmap(bitmap);
         SKData imageDataJpg = CreateJpgFromBitmap(bitmap);
 
         return new Result
         {
-            FullSizePngStream = CreateMemoryStreamFromImageData(imageDataPng),
             Jpg3MbStream = CreateMemoryStreamFromImageData(imageDataJpg)
         };
     }
@@ -160,7 +157,6 @@ public class CertificateGenerator
         }
     }
 
-
     private void RenderDate(SKCanvas canvas, SKBitmap bitmap, DateOnly date)
     {
         var paint = new SKPaint
@@ -175,12 +171,6 @@ public class CertificateGenerator
 
         var point = new SKPoint(leftMarginDate, bitmap.Height - bottomMarginDate);
         canvas.DrawText(text, point, paint);
-    }
-
-    private static SKData CreatePngFromBitmap(SKBitmap bitmap)
-    {
-        using var image = SKImage.FromBitmap(bitmap);
-        return image.Encode(SKEncodedImageFormat.Png, 100);
     }
 
     private static SKData CreateJpgFromBitmap(SKBitmap bitmap)
