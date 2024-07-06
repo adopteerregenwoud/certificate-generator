@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C#: CertificateGeneratorConsole Debug",
+            "name": "CertificateGeneratorConsole all-templates",
             "type": "coreclr",
             "request": "launch",
             "program": "${workspaceFolder}/CertificateGeneratorConsole/bin/Debug/net8.0/CertificateGeneratorConsole.dll",
