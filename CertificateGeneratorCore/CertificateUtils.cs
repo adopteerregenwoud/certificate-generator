@@ -2,6 +2,13 @@ namespace CertificateGeneratorCore;
 
 public static class CertificateUtils
 {
+    public static IEnumerable<AdoptionRecord> ParseExcel(string excelPath)
+    {
+        FileStream stream = new FileStream(excelPath, FileMode.Open, FileAccess.Read);
+        var parser = new ExcelAdoptionRecordsParser(stream);
+        return parser.Parse();
+    }
+
     /// <summary>
     /// Generate a certificate on the file system.
     /// </summary>

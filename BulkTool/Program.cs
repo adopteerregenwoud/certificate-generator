@@ -19,18 +19,11 @@ internal class Program
         var certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
 
         Console.WriteLine($"Reading records from {excelPath}...");
-        IEnumerable<AdoptionRecord> adoptionRecords = ParseExcel(excelPath);
+        IEnumerable<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcel(excelPath);
         foreach (AdoptionRecord adoptionRecord in adoptionRecords)
         {
             Console.WriteLine($"Generating certificate for {adoptionRecord.Name} - {adoptionRecord.Date:dd-MM-yyyy} - {adoptionRecord.SquareMeters}m2 in {adoptionRecord.Language}...");
             CertificateUtils.GenerateCertificate(adoptionRecord, certificateGenerator, outputDirectory);
         }
-    }
-
-    private static IEnumerable<AdoptionRecord> ParseExcel(string excelPath)
-    {
-        FileStream stream = new FileStream(excelPath, FileMode.Open, FileAccess.Read);
-        var parser = new ExcelAdoptionRecordsParser(stream);
-        return parser.Parse();
     }
 }

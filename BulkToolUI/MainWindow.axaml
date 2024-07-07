@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="BulkToolUI.MainWindow"
+        Title="Adopteer Regenwoud - Bulk Tool"
+        Width="600"
+        MaxWidth="600"
+        Height="230"
+        MaxHeight="230"
+        CanResize="False"
+        Icon="/Assets/logo.ico">
+    <StackPanel Margin="10">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Template folder:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox x:Name="TemplateDirTextBox" Grid.Row="0" Grid.Column="1" Watermark="Template folder" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Output folder:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox x:Name="OutputDirTextBox" Grid.Row="1" Grid.Column="1" Watermark="Output folder" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Excel file:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox x:Name="ExcelFileTextBox" Grid.Row="2" Grid.Column="1" Watermark="Excel file" Margin="0,0,0,10"/>
+        </Grid>
+        <Button Content="Generate Certificates" Click="OnGenerateCertificatesClickAsync" HorizontalAlignment="Center" />
+        <TextBlock Text="0 / 0" x:Name="ProgressTextBlock" HorizontalAlignment="Center" />
+        <TextBlock Text="__version_timestamp__" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+    </StackPanel>
+</Window>
