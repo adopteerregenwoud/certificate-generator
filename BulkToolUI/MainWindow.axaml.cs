@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CertificateGeneratorCore;
 
@@ -60,6 +61,32 @@ public partial class MainWindow : Window
         await MessageBox.Show(this, $"{nrRecords} certificates were generated.");
 
         SaveSettings(model);
+    }
+
+    private async void OnBrowseExcelFileButtonClick(object sender, RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null)
+        {
+            return;
+        }
+
+        IReadOnlyList<IStorageFile> files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Excel File",
+            AllowMultiple = false,
+            FileTypeFilter = [
+                new FilePickerFileType("Excel files (*.xlsx)")
+                {
+                    Patterns = ["*.xlsx"]
+                }
+            ]
+        });
+
+        if (files.Count >= 1)
+        {
+            ExcelFileTextBox.Text = files[0].Path.AbsolutePath;
+        }
     }
 
     private int GenerateCertificates(ViewModel model)

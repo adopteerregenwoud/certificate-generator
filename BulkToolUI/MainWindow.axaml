@@ -30,7 +30,16 @@
             <TextBox x:Name="OutputDirTextBox" Grid.Row="1" Grid.Column="1" Watermark="Output folder" Margin="0,0,0,10"/>
 
             <TextBlock Text="Excel file:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBox x:Name="ExcelFileTextBox" Grid.Row="2" Grid.Column="1" Watermark="Excel file" Margin="0,0,0,10"/>
+
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="ExcelFileTextBox" Grid.Column="0" Watermark="Excel file" Margin="0,0,0,10"/>
+                <Button Content="..." Click="OnBrowseExcelFileButtonClick" Grid.Column="1" Margin="5,0,0,10" Width="30"/>
+            </Grid>
         </Grid>
         <Button Content="Generate Certificates" Click="OnGenerateCertificatesClickAsync" HorizontalAlignment="Center" />
         <TextBlock Text="0 / 0" x:Name="ProgressTextBlock" HorizontalAlignment="Center" />
