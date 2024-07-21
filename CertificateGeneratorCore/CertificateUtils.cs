@@ -2,7 +2,7 @@ namespace CertificateGeneratorCore;
 
 public static class CertificateUtils
 {
-    public static IEnumerable<AdoptionRecord> ParseExcel(string excelPath)
+    public static IEnumerable<AdoptionRecord> ParseExcelWidthAdoptionRecords(string excelPath)
     {
         FileStream stream = new FileStream(excelPath, FileMode.Open, FileAccess.Read);
         var parser = new ExcelAdoptionRecordsParser(stream);

@@ -19,7 +19,7 @@ internal class Program
         var certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
 
         Console.WriteLine($"Reading records from {excelPath}...");
-        IEnumerable<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcel(excelPath);
+        IEnumerable<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcelWidthAdoptionRecords(excelPath);
         foreach (AdoptionRecord adoptionRecord in adoptionRecords)
         {
             Console.WriteLine($"Generating certificate for {adoptionRecord.Name} - {adoptionRecord.Date:dd-MM-yyyy} - {adoptionRecord.SquareMeters}m2 in {adoptionRecord.Language}...");

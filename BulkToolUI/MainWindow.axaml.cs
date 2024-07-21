@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -91,23 +92,42 @@ public partial class MainWindow : Window
 
     private int GenerateCertificates(ViewModel model)
     {
-        using var templateBitmapRetriever = new FileTemplateBitmapRetriever(model.TemplateDir!);
-        var certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
-        List<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcel(model.ExcelFile!).ToList();
-        int currentRecord = 1;
-        foreach (AdoptionRecord adoptionRecord in adoptionRecords)
+        try
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            using var templateBitmapRetriever = new FileTemplateBitmapRetriever(model.TemplateDir!);
+            var certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
+            List<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcelWidthAdoptionRecords(model.ExcelFile!).ToList();
+            int currentRecord = 1;
+            foreach (AdoptionRecord adoptionRecord in adoptionRecords)
             {
-                TextBlock progressTextBlock = this.FindControl<TextBlock>(ProgressTextBlockName)!;
-                progressTextBlock.Text = $"{currentRecord} / {adoptionRecords.Count}";
-            });
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    TextBlock progressTextBlock = this.FindControl<TextBlock>(ProgressTextBlockName)!;
+                    progressTextBlock.Text = $"{currentRecord} / {adoptionRecords.Count}";
+                });
 
-            CertificateUtils.GenerateCertificate(adoptionRecord, certificateGenerator, model.OutputDir!);
-            currentRecord++;
+                CertificateUtils.GenerateCertificate(adoptionRecord, certificateGenerator, model.OutputDir!);
+                currentRecord++;
+            }
+
+            return adoptionRecords.Count;
         }
-
-        return adoptionRecords.Count;
+        catch (KeyNotFoundException)
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await MessageBox.Show(this, "One of the columns in the Excel file has a header that was not recognized.");
+            });
+            return 0;
+        }
+        catch (Exception e)
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await MessageBox.Show(this, $"An error occurred:\r\n{e}");
+            });
+            return 0;
+        }
     }
 
     private ViewModel GetViewModel()

@@ -1,18 +1,38 @@
 using OfficeOpenXml;
 
-static class EPPlusExtensions
+namespace CertificateGeneratorCore;
+
+public static class EPPlusExtensions
 {
-    public static string FindColumnName(this ExcelWorksheet ws, int columnRow, string columnHeader)
+    /// <summary>
+    /// Find a column name given one or more possible column headers.
+    /// </summary>
+    /// <param name="ws">Worksheet to read the information from.</param>
+    /// <param name="headerRow">Index (1-based) of the row that contains the header.</param>
+    /// <param name="headerAlternatives">Name of column header with alternatives.</param>
+    /// <returns>Name of the column, for example "A" or "H".</returns>
+    /// <exception cref="KeyNotFoundException"></exception>
+    public static string FindColumnName(this ExcelWorksheet ws, int headerRow, IEnumerable<string> headerAlternatives)
     {
         int lastColumn = ws.Dimension.End.Column;
-        for (int i = 1; i <= lastColumn; i++)
+        const int nrLettersInAlphabet = 26;
+        if (lastColumn > nrLettersInAlphabet)
         {
-            if (ws.Cells[columnRow, i].Value as string == columnHeader)
+            throw new NotImplementedException("FindColumnName does not support more than 26 columns");
+        }
+
+        for (int columnIndex = 1; columnIndex <= lastColumn; columnIndex++)
+        {
+            foreach (var headerAlternative in headerAlternatives)
             {
-                return ((char)('A' - 1 + i)).ToString();
+                string? cellText = ws.Cells[headerRow, columnIndex].Value as string;
+                if (string.Equals(cellText, headerAlternative, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return ((char)('A' + columnIndex - 1)).ToString();
+                }
             }
         }
-        string columnHeadersText = string.Join(", ", columnHeader);
+        string columnHeadersText = string.Join(", ", headerAlternatives);
         throw new KeyNotFoundException($"Unknown column {columnHeadersText}");
     }
 

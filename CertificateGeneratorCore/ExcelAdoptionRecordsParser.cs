@@ -20,10 +20,11 @@ public class ExcelAdoptionRecordsParser : IAdoptionRecordsParser
             int headerRow = 1;
             int lastRow = GetLastRowWithData(ws);
 
-            string columnName = ws.FindColumnName(headerRow, "Naam");
-            string columnSquareMeters = ws.FindColumnName(headerRow, "Aantal m2");
-            string columnDate = ws.FindColumnName(headerRow, "Datum");
-            string columnLanguage = ws.FindColumnName(headerRow, "Taal");
+            string columnName = ws.FindColumnName(headerRow, ["Naam", "Name"]);
+            string columnSquareMeters = ws.FindColumnName(headerRow,
+                ["Aantal m2", "m2", "vierkante meter", "vierkante meters", "square meters"]);
+            string columnDate = ws.FindColumnName(headerRow, ["Datum", "date"]);
+            string columnLanguage = ws.FindColumnName(headerRow, ["Taal", "language"]);
 
             return new List<AdoptionRecord>(ws.Extract<AdoptionRecord>()
                 .WithProperty(p => p.Name, columnName)
