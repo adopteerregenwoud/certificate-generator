@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 namespace CertificateGeneratorApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("certificate")]
 public class CertificateController : ControllerBase
 {
     private readonly ILogger<CertificateController> _logger;
@@ -22,7 +22,7 @@ public class CertificateController : ControllerBase
         _certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
     }
 
-    [HttpGet(Name = "GenerateCertificate")]
+    [HttpGet(Name = "generate")]
     public IActionResult Get(string name, int squareMeters, int year, int month, int day, Language language)
     {
         DateOnly date = new(year, month, day);
