@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace CertificateGeneratorApi;
 
@@ -8,7 +9,9 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+        builder.Services.AddHealthChecks()
+            .AddCheck<ReadyHealthCheck>("Ready", tags: ["ready"]);
+
         builder.Services.Configure<ApiConfiguration>(builder.Configuration.GetSection("ApiConfiguration"));
 
         builder.Services.AddControllers()
@@ -17,6 +20,7 @@ internal class Program
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
         ;
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
@@ -32,6 +36,15 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.MapHealthChecks("/health/ready", new HealthCheckOptions
+        {
+            Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+        });
+        app.MapHealthChecks("/health/live", new HealthCheckOptions
+        {
+            Predicate = _ => false
+        });
 
         app.UseHttpsRedirection();
 
