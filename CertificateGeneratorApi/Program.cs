@@ -37,6 +37,8 @@ internal class Program
             app.UseSwaggerUI();
         }
 
+        app.UseMiddleware<ApiTokenMiddleware>();
+
         app.MapHealthChecks("/health/ready", new HealthCheckOptions
         {
             Predicate = healthCheck => healthCheck.Tags.Contains("ready")
