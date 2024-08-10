@@ -1,4 +1,6 @@
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using SkiaSharp;
+using Serilog;
 
 namespace CertificateGeneratorCore;
 
@@ -46,11 +48,12 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
             foreach (int areaM2 in _areasM2)
             {
                 string templatePath = Path.Combine(templateDirectoryPath, $"{areaM2}-{language.ToString().ToLower()}.png");
-                Console.WriteLine($"  Reading template bitmap for {areaM2}m2 in {language} from {templatePath}...");
+                Serilog.Log.Information("Reading template bitmap for {areaM2}m2 in {language} from {templatePath}...", areaM2, language, templatePath);
                 using var stream = new FileStream(templatePath, FileMode.Open, FileAccess.Read);
                 SKBitmap templateBitmap = ReadBitmapFromStream(stream);
                 if (templateBitmap.Width != ExpectedWidth || templateBitmap.Height != ExpectedHeight)
                 {
+                    Serilog.Log.Error("Template image {templatePath} is not {ExpectedWidth}x{ExpectedHeight}", templatePath, ExpectedWidth, ExpectedHeight);
                     throw new InvalidDataException($"Template image {templatePath} is not {ExpectedWidth}x{ExpectedHeight}");
                 }
                 _certificateTemplateBitmaps[language][areaM2] = templateBitmap;

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Serilog;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace CertificateGeneratorApi;
@@ -8,6 +9,13 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .CreateLogger();
+        builder.Host.UseSerilog();
 
         builder.Services.AddHealthChecks()
             .AddCheck<ReadyHealthCheck>("Ready", tags: ["ready"]);
@@ -55,5 +63,7 @@ internal class Program
         app.MapControllers();
 
         app.Run();
+
+        Log.CloseAndFlush();
     }
 }
