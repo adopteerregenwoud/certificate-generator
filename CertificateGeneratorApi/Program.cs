@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Serilog.Formatting.Json;
 
 namespace CertificateGeneratorApi;
 
@@ -10,12 +11,7 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Configuration)
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .CreateLogger();
-        builder.Host.UseSerilog();
+        ConfigureLogging(builder);
 
         builder.Services.AddHealthChecks()
             .AddCheck<ReadyHealthCheck>("Ready", tags: ["ready"]);
@@ -32,9 +28,9 @@ internal class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
-            {
-                c.UseInlineDefinitionsForEnums();
-            });
+        {
+            c.UseInlineDefinitionsForEnums();
+        });
 
         var app = builder.Build();
 
@@ -47,23 +43,40 @@ internal class Program
 
         app.UseMiddleware<ApiTokenMiddleware>();
 
-        app.MapHealthChecks("/health/ready", new HealthCheckOptions
-        {
-            Predicate = healthCheck => healthCheck.Tags.Contains("ready")
-        });
-        app.MapHealthChecks("/health/live", new HealthCheckOptions
-        {
-            Predicate = _ => false
-        });
-
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
 
         app.MapControllers();
+        MapHealthChecks(app);
 
         app.Run();
 
         Log.CloseAndFlush();
+    }
+
+    private static void ConfigureLogging(WebApplicationBuilder builder)
+    {
+        const string logFormat = "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Level:u3}] {Message:lj}{NewLine}{Exception}";
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .Enrich.FromLogContext()
+            .WriteTo.Console(new JsonFormatter()/*, outputTemplate: logFormat*/)
+            .CreateLogger();
+
+        builder.Host.UseSerilog();
+    }
+
+    private static void MapHealthChecks(WebApplication app)
+    {
+        app.MapHealthChecks("/health/ready", new HealthCheckOptions
+        {
+            Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+        });
+ 
+        app.MapHealthChecks("/health/live", new HealthCheckOptions
+        {
+            Predicate = _ => false
+        });
     }
 }
