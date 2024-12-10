@@ -5,10 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "CertificateGeneratorConsole all-templates",
+            "name": "C#: BulkToolUI",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/BulkToolUI/BulkToolUI.csproj"
+        },
+        {
+            "name": "BulkTool all-templates",
             "type": "coreclr",
             "request": "launch",
-            "program": "${workspaceFolder}/CertificateGeneratorConsole/bin/Debug/net8.0/CertificateGeneratorConsole.dll",
+            "program": "${workspaceFolder}/BulkTool/bin/Debug/net8.0/BulkTool.dll",
             "args": ["bestanden/all-templates.xlsx", "bestanden/templates", "/tmp"],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
