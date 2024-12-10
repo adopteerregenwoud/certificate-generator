@@ -14,7 +14,7 @@ internal class Program
         string outputDirectory = args[1];
         string name = args[2];
         int squareMeters = int.Parse(args[3]);
-        DateOnly date = DateOnly.Parse(args[4]);
+        string date = args[4];
         Language language = (Language)Enum.Parse(typeof(Language), args[5]);
 
         Console.WriteLine($"Reading certificate templates from {templateDirectory}...");

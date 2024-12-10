@@ -16,11 +16,11 @@ public class ExcelAdoptionRecordsParserTests
         // Assert
         var expectedRecords = new List<AdoptionRecord>
         {
-            new ("John Doe", 3, new DateOnly(2023, 06, 01), Language.English),
-            new ("Jane Smith en ook nog vele anderen", 200, new DateOnly(2023, 06, 02), Language.Dutch),
-            new ("Max Mustermann", 180, new DateOnly(2023, 06, 03), Language.English),
-            new ("María García", 5, new DateOnly(2023, 06, 04), Language.Dutch),
-            new ("François Dupont", 20, new DateOnly(2023, 06, 05), Language.Dutch)
+            new ("John Doe", 3, "2023-06-01", Language.English),
+            new ("Jane Smith en ook nog vele anderen", 200, "2023-06-02", Language.Dutch),
+            new ("Max Mustermann", 180, "2023-06-03", Language.English),
+            new ("María García", 5, "2023-06-04", Language.Dutch),
+            new ("François Dupont", 20, "December 2024", Language.Dutch)
         };
 
         Assert.That(actualRecords, Is.EqualTo(expectedRecords));

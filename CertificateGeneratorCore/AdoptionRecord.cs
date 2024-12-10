@@ -6,35 +6,7 @@ public enum Language
     English
 }
 
-public class AdoptionRecord(string name, int squareMeters, DateOnly date, Language language) : IEquatable<AdoptionRecord>
+public record class AdoptionRecord(string Name, int SquareMeters, string Date, Language Language)
 {
-    public string Name { get; set; } = name;
-    public int SquareMeters { get; set; } = squareMeters;
-    public DateOnly Date { get; set; } = date;
-    public Language Language { get; set; } = language;
-
-    public AdoptionRecord() : this(string.Empty, 0, new DateOnly(), Language.Dutch) { }
-
-    public bool Equals(AdoptionRecord? other)
-    {
-        if (other == null)
-        {
-            return false;
-        }
-
-        return Name == other.Name &&
-            SquareMeters == other.SquareMeters &&
-            Date == other.Date &&
-            Language == other.Language;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as AdoptionRecord);
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Name, SquareMeters, Date, Language);
-    }
+    public AdoptionRecord() : this(string.Empty, 0, string.Empty, Language.Dutch) { }
 }

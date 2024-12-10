@@ -9,7 +9,7 @@ public class CertificateGeneratorTests
     public void TestGenerateOne()
     {
         // Arrange
-        var adoptionRecord = new AdoptionRecord("Janssen", 20, new DateOnly(2024, 6, 19), Language.Dutch);
+        var adoptionRecord = new AdoptionRecord("Janssen", 20, "19-06-2024", Language.Dutch);
         var sut = new CertificateGenerator(new DummyTemplateBitmapReceiver());
 
         // Act
@@ -23,7 +23,7 @@ public class CertificateGeneratorTests
     public void TestGenerateTwo()
     {
         // Arrange
-        var adoptionRecord = new AdoptionRecord("Janssen", 20, new DateOnly(2024, 6, 19), Language.Dutch);
+        var adoptionRecord = new AdoptionRecord("Janssen", 20, "19-06-2024", Language.Dutch);
         using Stream templateStream = ImageUtils.CreateBlackTemplate();
         var sut = new CertificateGenerator(new DummyTemplateBitmapReceiver());
         CertificateGenerator.Result result = sut.Generate(adoptionRecord);

@@ -28,7 +28,7 @@ public class CertificateController : ControllerBase
         string obfuscatedName = $"{name.First()}{name.Length - 2}{name.Last()}";
         DateOnly date = new(year, month, day);
         _logger.LogInformation("Generating certificate for {name}, {area} m2, {date}, {language}", obfuscatedName, squareMeters, date, language);
-        AdoptionRecord adoptionRecord = new(name, squareMeters, date, language);
+        AdoptionRecord adoptionRecord = new(name, squareMeters, $"{date:dd-MM-yyy}", language);
         CertificateGenerator.Result result = _certificateGenerator.Generate(adoptionRecord);
         _logger.LogInformation("{nrBytes} bytes generated", result.Jpg3MbStream.Length);
         return new FileStreamResult(result.Jpg3MbStream, "image/jpeg");

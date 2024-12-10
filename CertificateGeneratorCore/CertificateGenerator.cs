@@ -157,7 +157,7 @@ public class CertificateGenerator
         }
     }
 
-    private void RenderDate(SKCanvas canvas, SKBitmap bitmap, DateOnly date)
+    private void RenderDate(SKCanvas canvas, SKBitmap bitmap, string date)
     {
         var paint = new SKPaint
         {
@@ -167,10 +167,8 @@ public class CertificateGenerator
             Typeface = _robotoSlabTypefaceRegular
         };
 
-        string text = $"{date:dd-MM-yyy}";
-
         var point = new SKPoint(leftMarginDate, bitmap.Height - bottomMarginDate);
-        canvas.DrawText(text, point, paint);
+        canvas.DrawText(date, point, paint);
     }
 
     private static SKData CreateJpgFromBitmap(SKBitmap bitmap)

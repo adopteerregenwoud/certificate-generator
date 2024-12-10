@@ -29,7 +29,7 @@ public class ExcelAdoptionRecordsParser : IAdoptionRecordsParser
             return new List<AdoptionRecord>(ws.Extract<AdoptionRecord>()
                 .WithProperty(p => p.Name, columnName)
                 .WithProperty(p => p.SquareMeters, columnSquareMeters)
-                .WithProperty(p => p.Date, columnDate, cell => DateOnly.Parse((string)cell))
+                .WithProperty(p => p.Date, columnDate)
                 .WithProperty(p => p.Language, columnLanguage, cell => Enum.Parse<Language>((string)cell))
                 .GetData(headerRow + 1, lastRow));
         }

@@ -157,7 +157,7 @@ public partial class MainWindow : Window
         {
             Name = model.FullName!,
             SquareMeters = int.Parse(model.AreaM2Text!),
-            Date = DateOnly.FromDateTime(model.Date.GetValueOrDefault().DateTime),
+            Date = $"{DateOnly.FromDateTime(model.Date.GetValueOrDefault().DateTime):dd-MM-yyyy}",
             Language = Enum.Parse<Language>(model.LanguageText!)
         };
     }
