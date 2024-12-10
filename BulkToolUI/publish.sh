@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script only works on my machine.
+# This script only works on my machine because of the dependency on my home server.
 # TODO: change it so a release will be added to Github.
 
 set -euo pipefail
@@ -39,7 +39,7 @@ cd $DIST_DIR && zip -r $ZIP_PATH *
 cd -
 
 echo "Uploading zip to fitlet..."
-smbclient //fitlet/adopteerregenwoud -N -c "put /tmp/$ZIP_NAME $ZIP_NAME"
+smbclient //homeserver/adopteerregenwoud -N -c "put /tmp/$ZIP_NAME $ZIP_NAME"
 
 echo "Download URL = https://thuis.blauwe-lucht.nl/adopteer-regenwoud/$ZIP_NAME"
 echo
