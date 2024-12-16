@@ -71,7 +71,30 @@ public class CertificateTemplateConfig
         public RgbColor AreaColor { get; set; } = new(0, 0, 0);
     }
 
+    private class YamlConfig
+    {
+        [YamlMember(Alias = "areas")]
+        public List<YamlAreaItem> Areas { get; set; } = new();
+
+        [YamlMember(Alias = "area_right_margin")]
+        public int AreaRightMargin { get; set; }
+
+        [YamlMember(Alias = "area_top_margin")]
+        public int AreaTopMargin { get; set; }
+
+        [YamlMember(Alias = "name_left_margin")]
+        public int NameLeftMargin { get; set; }
+
+        [YamlMember(Alias = "name_bottom_margin")]
+        public int NameBottomMargin { get; set; }
+    }
+
+    // Actual configuration:
     public Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig> ConfigPerAreaType { get; set; } = [];
+    public int AreaRightMargin { get; set; }
+    public int AreaTopMargin { get; set; }
+    public int NameLeftMargin { get; set; }
+    public int NameBottomMargin { get; set; }
 
     public static CertificateTemplateConfig Default => new()
     {
@@ -83,15 +106,25 @@ public class CertificateTemplateConfig
             [CertificateTemplateType.TwentyM2] = new() { AreaFontSize = 360, AreaColor = new(255, 255, 255) },
             [CertificateTemplateType.FiftyM2] = new() { AreaFontSize = 430, AreaColor = new(196, 217, 117) },
             [CertificateTemplateType.HundredM2] = new() { AreaFontSize = 430, AreaColor = new(123, 103, 91) },
-        }
+        },
+        AreaRightMargin = 60,
+        AreaTopMargin = 0,
+        NameLeftMargin = 810,
+        NameBottomMargin = 750
     };
 
     public static CertificateTemplateConfig FromYaml(string yaml)
     {
         var deserializer = new DeserializerBuilder().Build();
-        var areaItems = deserializer.Deserialize<List<YamlAreaItem>>(yaml);
-        var config = new CertificateTemplateConfig();
-        foreach (var item in areaItems)
+        var yamlConfig = deserializer.Deserialize<YamlConfig>(yaml);
+        var config = new CertificateTemplateConfig()
+        {
+            AreaRightMargin = yamlConfig.AreaRightMargin,
+            AreaTopMargin = yamlConfig.AreaTopMargin,
+            NameLeftMargin = yamlConfig.NameLeftMargin,
+            NameBottomMargin = yamlConfig.NameBottomMargin
+        };
+        foreach (var item in yamlConfig.Areas)
         {
             if (Enum.IsDefined(typeof(CertificateTemplateType), item.Area))
             {

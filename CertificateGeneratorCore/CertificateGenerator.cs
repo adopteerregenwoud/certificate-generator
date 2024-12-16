@@ -15,13 +15,9 @@ public class CertificateGenerator
     public SKTypeface RobotoSlabTypefaceRegular { get; private set; }
     private readonly CertificateTemplateConfig _config;
 
-    private const int rightMarginSquareMeters = 60;
-    private const int topMarginSquareMeters = 0;
-    private const int leftMarginName = 810;
-    private const int bottomMarginName = 750;
     public const int MaxNameWidth = 1670;
     public const int FontSizeName = 175;
-    private const int leftMarginDate = leftMarginName;
+    private const int leftMarginDate = 810;
     private const int bottomMarginDate = 460;
     private const int fontSizeDate = 50;
     private const int jpgQuality = 94;
@@ -98,7 +94,7 @@ public class CertificateGenerator
 
         string m2Text = $"m²";
         float m2TextSize = paintForMeasure.MeasureText(m2Text);
-        var point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize, topMarginSquareMeters + fontSize);
+        var point = new SKPoint(bitmap.Width - _config.AreaRightMargin - m2TextSize, _config.AreaTopMargin + fontSize);
         canvas.DrawText(m2Text, point, paintForRender);
 
         paintForMeasure.Typeface = RobotoSlabTypefaceMedium;
@@ -106,7 +102,7 @@ public class CertificateGenerator
         string text = $"{squareMeters}";
         float textSize = paintForMeasure.MeasureText(text);
 
-        point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize, topMarginSquareMeters + fontSize);
+        point = new SKPoint(bitmap.Width - _config.AreaRightMargin - m2TextSize - textSize, _config.AreaTopMargin + fontSize);
         canvas.DrawText(text, point, paintForRender);
     }
 
@@ -132,12 +128,12 @@ public class CertificateGenerator
         {
             firstLineYOffset = FontSizeName / 2;
         }
-        var point = new SKPoint(leftMarginName, bitmap.Height - bottomMarginName + firstLineYOffset);
+        var point = new SKPoint(_config.NameLeftMargin, bitmap.Height - _config.NameBottomMargin + firstLineYOffset);
         canvas.DrawText(wrappedLines[0], point, paint);
 
         if (wrappedLines.Count > 1)
         {
-            point = new SKPoint(leftMarginName, bitmap.Height - bottomMarginName + FontSizeName);
+            point = new SKPoint(_config.NameLeftMargin, bitmap.Height - _config.NameBottomMargin + FontSizeName);
             canvas.DrawText(wrappedLines[1], point, paint);
         }
 
