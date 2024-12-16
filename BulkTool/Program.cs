@@ -16,7 +16,8 @@ internal class Program
 
         Console.WriteLine($"Reading certificate templates from {templateDirectory}...");
         using var templateBitmapRetriever = new FileTemplateBitmapRetriever(templateDirectory);
-        var certificateGenerator = new CertificateGenerator(templateBitmapRetriever, CertificateTemplateConfig.Default);
+        CertificateTemplateConfig config = GetOrCreateConfigFromTemplateDirectory(templateDirectory);
+        var certificateGenerator = new CertificateGenerator(templateBitmapRetriever, config);
 
         Console.WriteLine($"Reading records from {excelPath}...");
         IEnumerable<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcelWidthAdoptionRecords(excelPath);
@@ -25,5 +26,19 @@ internal class Program
             Console.WriteLine($"Generating certificate for {adoptionRecord.Name} - {adoptionRecord.Date:dd-MM-yyyy} - {adoptionRecord.SquareMeters}m2 in {adoptionRecord.Language}...");
             CertificateUtils.GenerateCertificate(adoptionRecord, certificateGenerator, outputDirectory);
         }
+    }
+
+    public static CertificateTemplateConfig GetOrCreateConfigFromTemplateDirectory(string templateDirectory)
+    {
+        string configPath = Path.Join(templateDirectory, "config.yml");
+        if (!File.Exists(configPath))
+        {
+            CertificateTemplateConfig config = CertificateTemplateConfig.Default;
+            File.WriteAllText(configPath, config.ToString());
+            return config;
+        }
+
+        string yaml = File.ReadAllText(configPath);
+        return CertificateTemplateConfig.FromYaml(yaml);
     }
 }
