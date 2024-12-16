@@ -95,7 +95,8 @@ public partial class MainWindow : Window
         try
         {
             using var templateBitmapRetriever = new FileTemplateBitmapRetriever(model.TemplateDir!);
-            var certificateGenerator = new CertificateGenerator(templateBitmapRetriever, CertificateTemplateConfig.Default);
+            CertificateTemplateConfig config = GetOrCreateConfigFromTemplateDirectory(model.TemplateDir!);
+            var certificateGenerator = new CertificateGenerator(templateBitmapRetriever, config);
             List<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcelWidthAdoptionRecords(model.ExcelFile!).ToList();
             int currentRecord = 1;
             foreach (AdoptionRecord adoptionRecord in adoptionRecords)
@@ -187,5 +188,19 @@ public partial class MainWindow : Window
     {
         Settings settings = new(model.TemplateDir!, model.OutputDir!);
         SettingsService.SaveSettings(settings);
+    }
+
+    private static CertificateTemplateConfig GetOrCreateConfigFromTemplateDirectory(string templateDirectory)
+    {
+        string configPath = Path.Join(templateDirectory, "config.yml");
+        if (!File.Exists(configPath))
+        {
+            CertificateTemplateConfig config = CertificateTemplateConfig.Default;
+            File.WriteAllText(configPath, config.ToString());
+            return config;
+        }
+
+        string yaml = File.ReadAllText(configPath);
+        return CertificateTemplateConfig.FromYaml(yaml);
     }
 }
