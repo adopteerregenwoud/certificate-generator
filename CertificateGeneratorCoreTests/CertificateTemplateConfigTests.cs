@@ -15,6 +15,10 @@ public class CertificateTemplateConfigTests
         string yaml = """
         - area: 1
           area_font_size: 390
+          area_color:
+            r: 64
+            g: 128
+            b: 192
         - area: 4
           area_font_size: 430
         - area: 10
@@ -30,7 +34,7 @@ public class CertificateTemplateConfigTests
         {
             ConfigPerAreaType = new Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig>()
             {
-                [CertificateTemplateType.OneM2] = new() { AreaFontSize = 390 },
+                [CertificateTemplateType.OneM2] = new() { AreaFontSize = 390, AreaColor = new(64, 128, 192) },
                 [CertificateTemplateType.FourM2] = new() { AreaFontSize = 430 },
                 [CertificateTemplateType.TenM2] = new() { AreaFontSize = 430 },
                 [CertificateTemplateType.TwentyM2] = new() { AreaFontSize = 360 },

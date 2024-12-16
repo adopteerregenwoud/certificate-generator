@@ -3,6 +3,20 @@ using YamlDotNet.Serialization;
 
 namespace CertificateGeneratorCore;
 
+public record class RgbColor(int R, int G, int B)
+{
+    public RgbColor() : this(0, 0, 0) { }
+
+    [YamlMember(Alias = "r")]
+    public int R { get; init; } = R;
+
+    [YamlMember(Alias = "g")]
+    public int G { get; init; } = G;
+
+    [YamlMember(Alias = "b")]
+    public int B { get; init; } = B;
+}
+
 /// <summary>
 /// Configuration item for a specific area size.
 /// </summary>
@@ -12,6 +26,7 @@ public class CertificateTemplateAreaConfig
     /// The size of the font to use to render the size of the area.
     /// </summary>
     public int AreaFontSize { get; set; }
+    public RgbColor AreaColor { get; set; } = new(0, 0, 0);
 
     public override bool Equals(object? obj)
     {
@@ -24,17 +39,18 @@ public class CertificateTemplateAreaConfig
             return false;
         }
 
-        return AreaFontSize == other.AreaFontSize;
+        return AreaFontSize == other.AreaFontSize &&
+               AreaColor == other.AreaColor;
     }
 
     public override int GetHashCode()
     {
-        return AreaFontSize.GetHashCode();
+        return HashCode.Combine(AreaFontSize, AreaColor);
     }
 
     public override string ToString()
     {
-        return $"{{ AreaFontSize = {AreaFontSize} }}";
+        return $"{{ AreaFontSize = {AreaFontSize}, Color = {AreaColor} }}";
     }
 }
 
@@ -50,6 +66,9 @@ public class CertificateTemplateConfig
 
         [YamlMember(Alias = "area_font_size")]
         public int AreaFontSize { get; set; }
+
+        [YamlMember(Alias = "area_color")]
+        public RgbColor AreaColor { get; set; } = new(0, 0, 0);
     }
 
     public Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig> ConfigPerAreaType { get; set; } = [];
@@ -58,12 +77,12 @@ public class CertificateTemplateConfig
     {
         ConfigPerAreaType = new Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig>()
         {
-            [CertificateTemplateType.OneM2] = new() { AreaFontSize = 390 },
-            [CertificateTemplateType.FourM2] = new() { AreaFontSize = 430 },
-            [CertificateTemplateType.TenM2] = new() { AreaFontSize = 430 },
-            [CertificateTemplateType.TwentyM2] = new() { AreaFontSize = 360 },
-            [CertificateTemplateType.FiftyM2] = new() { AreaFontSize = 430 },
-            [CertificateTemplateType.HundredM2] = new() { AreaFontSize = 430 },
+            [CertificateTemplateType.OneM2] = new() { AreaFontSize = 390, AreaColor = new(196, 217, 117) },
+            [CertificateTemplateType.FourM2] = new() { AreaFontSize = 430, AreaColor = new(255, 255, 255) },
+            [CertificateTemplateType.TenM2] = new() { AreaFontSize = 430, AreaColor = new(196, 217, 117) },
+            [CertificateTemplateType.TwentyM2] = new() { AreaFontSize = 360, AreaColor = new(255, 255, 255) },
+            [CertificateTemplateType.FiftyM2] = new() { AreaFontSize = 430, AreaColor = new(196, 217, 117) },
+            [CertificateTemplateType.HundredM2] = new() { AreaFontSize = 430, AreaColor = new(123, 103, 91) },
         }
     };
 
@@ -79,7 +98,8 @@ public class CertificateTemplateConfig
                 var type = (CertificateTemplateType)item.Area;
                 config.ConfigPerAreaType[type] = new CertificateTemplateAreaConfig
                 {
-                    AreaFontSize = item.AreaFontSize
+                    AreaFontSize = item.AreaFontSize,
+                    AreaColor = item.AreaColor
                 };
             }
             else
@@ -138,8 +158,13 @@ public class CertificateTemplateConfig
         StringBuilder sb = new();
         foreach (CertificateTemplateType type in ConfigPerAreaType.Keys.Order())
         {
+            var areaConfig = ConfigPerAreaType[type];
             sb.AppendLine($"- area: {(int)type}");
-            sb.AppendLine($"  area_font_size: {ConfigPerAreaType[type]}");
+            sb.AppendLine($"  area_font_size: {areaConfig.AreaFontSize}");
+            sb.AppendLine($"  area_color:");
+            sb.AppendLine($"    r: {areaConfig.AreaColor.R}");
+            sb.AppendLine($"    g: {areaConfig.AreaColor.G}");
+            sb.AppendLine($"    b: {areaConfig.AreaColor.B}");
         }
 
         return sb.ToString();

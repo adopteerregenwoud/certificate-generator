@@ -15,16 +15,6 @@ public class CertificateGenerator
     public SKTypeface RobotoSlabTypefaceRegular { get; private set; }
     private readonly CertificateTemplateConfig _config;
 
-    private readonly Dictionary<int, SKColor> _areaColors = new()
-    {
-        [1] = new SKColor(196, 217, 117, 255),
-        [4] = SKColors.White,
-        [10] = new SKColor(196, 217, 117, 255),
-        [20] = SKColors.White,
-        [50] = new SKColor(196, 217, 117, 255),
-        [100] = new SKColor(123, 103, 91, 255)
-    };
-
     private const int rightMarginSquareMeters = 60;
     private const int topMarginSquareMeters = 0;
     private const int leftMarginName = 810;
@@ -81,8 +71,8 @@ public class CertificateGenerator
         const int dropShadowDelta = 15;
         const int dropShadowSigma = 15;
 
-        SKColor textColor = _areaColors.Last(kv => kv.Key <= squareMeters).Value;
         CertificateTemplateType templateType = CertificateTemplateTypeHelper.GetTypeFromAreaSize(squareMeters);
+        SKColor textColor = ConvertToSkColor(_config[templateType].AreaColor);
         int fontSize = _config[templateType].AreaFontSize;
 
         // We don't want the size of dropshadow to influence the location of the text.
@@ -118,6 +108,11 @@ public class CertificateGenerator
 
         point = new SKPoint(bitmap.Width - rightMarginSquareMeters - m2TextSize - textSize, topMarginSquareMeters + fontSize);
         canvas.DrawText(text, point, paintForRender);
+    }
+
+    private SKColor ConvertToSkColor(RgbColor areaColor)
+    {
+        return new SKColor((byte)areaColor.R, (byte)areaColor.G, (byte)areaColor.B, 255);
     }
 
     private void RenderName(SKCanvas canvas, SKBitmap bitmap, string name)
