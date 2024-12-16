@@ -28,7 +28,7 @@ public class CertificateTemplateConfigTests
         """;
         CertificateTemplateConfig expected = new()
         {
-            FontSizePerType = new Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig>()
+            ConfigPerAreaType = new Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig>()
             {
                 [CertificateTemplateType.OneM2] = new() { AreaFontSize = 390 },
                 [CertificateTemplateType.FourM2] = new() { AreaFontSize = 430 },

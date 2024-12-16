@@ -12,7 +12,8 @@ public class CertificateGenerator
 
     private readonly ITemplateBitmapRetriever _templateBitmapRetriever;
     public SKTypeface RobotoSlabTypefaceMedium { get; private set; }
-    private readonly SKTypeface _robotoSlabTypefaceRegular;
+    public SKTypeface RobotoSlabTypefaceRegular { get; private set; }
+    private readonly CertificateTemplateConfig _config;
 
     private readonly Dictionary<int, SKColor> _areaColors = new()
     {
@@ -22,15 +23,6 @@ public class CertificateGenerator
         [20] = SKColors.White,
         [50] = new SKColor(196, 217, 117, 255),
         [100] = new SKColor(123, 103, 91, 255)
-    };
-    private readonly Dictionary<int, int> _areaFontsizes = new()
-    {
-        [1] = 390,
-        [4] = 430,
-        [10] = 430,
-        [20] = 360,
-        [50] = 430,
-        [100] = 430
     };
 
     private const int rightMarginSquareMeters = 60;
@@ -49,7 +41,9 @@ public class CertificateGenerator
         _templateBitmapRetriever = templateBitmapRetriever;
 
         RobotoSlabTypefaceMedium = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Medium.ttf");
-        _robotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
+        RobotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
+
+        _config = CertificateTemplateConfig.Default;
     }
 
     private static SKTypeface ReadFontFromEmbeddedResource(string resourceName)
@@ -88,7 +82,8 @@ public class CertificateGenerator
         const int dropShadowSigma = 15;
 
         SKColor textColor = _areaColors.Last(kv => kv.Key <= squareMeters).Value;
-        int fontSize = _areaFontsizes.Last(kv => kv.Key <= squareMeters).Value;
+        CertificateTemplateType templateType = CertificateTemplateTypeHelper.GetTypeFromAreaSize(squareMeters);
+        int fontSize = _config[templateType].AreaFontSize;
 
         // We don't want the size of dropshadow to influence the location of the text.
         // So we measure with a different paint than we actually draw.
@@ -97,14 +92,14 @@ public class CertificateGenerator
             Color = textColor,
             TextSize = fontSize,
             IsAntialias = true,
-            Typeface = _robotoSlabTypefaceRegular
+            Typeface = RobotoSlabTypefaceRegular
         };
         var paintForRender = new SKPaint
         {
             Color = textColor,
             TextSize = fontSize,
             IsAntialias = true,
-            Typeface = _robotoSlabTypefaceRegular,
+            Typeface = RobotoSlabTypefaceRegular,
             ImageFilter = SKImageFilter.CreateDropShadow(
                 dropShadowDelta, dropShadowDelta,
                 dropShadowSigma, dropShadowSigma,
@@ -164,7 +159,7 @@ public class CertificateGenerator
             Color = SKColors.White,
             TextSize = fontSizeDate,
             IsAntialias = true,
-            Typeface = _robotoSlabTypefaceRegular
+            Typeface = RobotoSlabTypefaceRegular
         };
 
         var point = new SKPoint(leftMarginDate, bitmap.Height - bottomMarginDate);

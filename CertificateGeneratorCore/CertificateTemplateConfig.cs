@@ -52,7 +52,20 @@ public class CertificateTemplateConfig
         public int AreaFontSize { get; set; }
     }
 
-    public Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig> FontSizePerType { get; set; } = [];
+    public Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig> ConfigPerAreaType { get; set; } = [];
+
+    public static CertificateTemplateConfig Default => new()
+    {
+        ConfigPerAreaType = new Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig>()
+        {
+            [CertificateTemplateType.OneM2] = new() { AreaFontSize = 390 },
+            [CertificateTemplateType.FourM2] = new() { AreaFontSize = 430 },
+            [CertificateTemplateType.TenM2] = new() { AreaFontSize = 430 },
+            [CertificateTemplateType.TwentyM2] = new() { AreaFontSize = 360 },
+            [CertificateTemplateType.FiftyM2] = new() { AreaFontSize = 430 },
+            [CertificateTemplateType.HundredM2] = new() { AreaFontSize = 430 },
+        }
+    };
 
     public static CertificateTemplateConfig FromYaml(string yaml)
     {
@@ -64,7 +77,7 @@ public class CertificateTemplateConfig
             if (Enum.IsDefined(typeof(CertificateTemplateType), item.Area))
             {
                 var type = (CertificateTemplateType)item.Area;
-                config.FontSizePerType[type] = new CertificateTemplateAreaConfig
+                config.ConfigPerAreaType[type] = new CertificateTemplateAreaConfig
                 {
                     AreaFontSize = item.AreaFontSize
                 };
@@ -75,6 +88,19 @@ public class CertificateTemplateConfig
             }
         }
         return config;
+    }
+
+    public CertificateTemplateAreaConfig this[CertificateTemplateType templateType]
+    {
+        get
+        {
+            if (ConfigPerAreaType.TryGetValue(templateType, out CertificateTemplateAreaConfig? config))
+            {
+                return config;
+            }
+
+            throw new KeyNotFoundException($"Template type '{templateType}' is not configured.");
+        }
     }
 
     public override bool Equals(object? obj)
@@ -88,9 +114,9 @@ public class CertificateTemplateConfig
             return false;
         }
 
-        return FontSizePerType.Count == other.FontSizePerType.Count &&
-               FontSizePerType.All(kvp =>
-                   other.FontSizePerType.TryGetValue(kvp.Key, out var otherValue) &&
+        return ConfigPerAreaType.Count == other.ConfigPerAreaType.Count &&
+               ConfigPerAreaType.All(kvp =>
+                   other.ConfigPerAreaType.TryGetValue(kvp.Key, out var otherValue) &&
                    kvp.Value.Equals(otherValue));
     }
 
@@ -98,7 +124,7 @@ public class CertificateTemplateConfig
     {
         int hash = 17;
 
-        foreach (var kvp in FontSizePerType.OrderBy(kvp => kvp.Key))
+        foreach (var kvp in ConfigPerAreaType.OrderBy(kvp => kvp.Key))
         {
             hash = hash * 31 + kvp.Key.GetHashCode();
             hash = hash * 31 + kvp.Value.GetHashCode();
@@ -110,10 +136,10 @@ public class CertificateTemplateConfig
     public override string ToString()
     {
         StringBuilder sb = new();
-        foreach (CertificateTemplateType type in FontSizePerType.Keys.Order())
+        foreach (CertificateTemplateType type in ConfigPerAreaType.Keys.Order())
         {
             sb.AppendLine($"- area: {(int)type}");
-            sb.AppendLine($"  area_font_size: {FontSizePerType[type]}");
+            sb.AppendLine($"  area_font_size: {ConfigPerAreaType[type]}");
         }
 
         return sb.ToString();
