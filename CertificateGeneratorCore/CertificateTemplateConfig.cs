@@ -230,26 +230,28 @@ public class CertificateTemplateConfig
     public override string ToString()
     {
         StringBuilder sb = new();
+        sb.AppendLine("areas:");
+
         foreach (CertificateTemplateType type in ConfigPerAreaType.Keys.Order())
         {
             var areaConfig = ConfigPerAreaType[type];
-            sb.AppendLine("areas:");
             sb.AppendLine($"- area: {(int)type}");
             sb.AppendLine($"  area_font_size: {areaConfig.AreaFontSize}");
             sb.AppendLine($"  area_color:");
             sb.AppendLine($"    r: {areaConfig.AreaColor.R}");
             sb.AppendLine($"    g: {areaConfig.AreaColor.G}");
             sb.AppendLine($"    b: {areaConfig.AreaColor.B}");
-            sb.AppendLine($"area_right_margin: {AreaRightMargin}");
-            sb.AppendLine($"area_top_margin: {AreaTopMargin}");
-            sb.AppendLine($"name_left_margin: {NameLeftMargin}");
-            sb.AppendLine($"name_bottom_margin: {NameBottomMargin}");
-            sb.AppendLine($"name_font_size: {NameFontSize}");
-            sb.AppendLine($"name_max_width: {NameMaxWidth}");
-            sb.AppendLine($"date_left_margin: {DateLeftMargin}");
-            sb.AppendLine($"date_bottom_margin: {DateBottomMargin}");
-            sb.AppendLine($"date_font_size: {DateFontSize}");
         }
+
+        sb.AppendLine($"area_right_margin: {AreaRightMargin}");
+        sb.AppendLine($"area_top_margin: {AreaTopMargin}");
+        sb.AppendLine($"name_left_margin: {NameLeftMargin}");
+        sb.AppendLine($"name_bottom_margin: {NameBottomMargin}");
+        sb.AppendLine($"name_font_size: {NameFontSize}");
+        sb.AppendLine($"name_max_width: {NameMaxWidth}");
+        sb.AppendLine($"date_left_margin: {DateLeftMargin}");
+        sb.AppendLine($"date_bottom_margin: {DateBottomMargin}");
+        sb.AppendLine($"date_font_size: {DateFontSize}");
 
         return sb.ToString();
     }
