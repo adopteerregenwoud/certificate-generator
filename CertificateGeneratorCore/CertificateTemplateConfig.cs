@@ -87,6 +87,21 @@ public class CertificateTemplateConfig
 
         [YamlMember(Alias = "name_bottom_margin")]
         public int NameBottomMargin { get; set; }
+
+        [YamlMember(Alias = "name_font_size")]
+        public int NameFontSize { get; set; }
+
+        [YamlMember(Alias = "name_max_width")]
+        public int NameMaxWidth { get; set; }
+
+        [YamlMember(Alias = "date_left_margin")]
+        public int DateLeftMargin { get; set; }
+
+        [YamlMember(Alias = "date_bottom_margin")]
+        public int DateBottomMargin { get; set; }
+
+        [YamlMember(Alias = "date_font_size")]
+        public int DateFontSize { get; set; }
     }
 
     // Actual configuration:
@@ -95,6 +110,11 @@ public class CertificateTemplateConfig
     public int AreaTopMargin { get; set; }
     public int NameLeftMargin { get; set; }
     public int NameBottomMargin { get; set; }
+    public int NameFontSize { get; set; }
+    public int NameMaxWidth { get; set; }
+    public int DateLeftMargin { get; set; }
+    public int DateBottomMargin { get; set; }
+    public int DateFontSize { get; set; }
 
     public static CertificateTemplateConfig Default => new()
     {
@@ -110,7 +130,12 @@ public class CertificateTemplateConfig
         AreaRightMargin = 60,
         AreaTopMargin = 0,
         NameLeftMargin = 810,
-        NameBottomMargin = 750
+        NameBottomMargin = 750,
+        NameFontSize = 175,
+        NameMaxWidth = 1670,
+        DateLeftMargin = 810,
+        DateBottomMargin = 460,
+        DateFontSize = 50
     };
 
     public static CertificateTemplateConfig FromYaml(string yaml)
@@ -122,7 +147,12 @@ public class CertificateTemplateConfig
             AreaRightMargin = yamlConfig.AreaRightMargin,
             AreaTopMargin = yamlConfig.AreaTopMargin,
             NameLeftMargin = yamlConfig.NameLeftMargin,
-            NameBottomMargin = yamlConfig.NameBottomMargin
+            NameBottomMargin = yamlConfig.NameBottomMargin,
+            NameFontSize = yamlConfig.NameFontSize,
+            NameMaxWidth = yamlConfig.NameMaxWidth,
+            DateLeftMargin = yamlConfig.DateLeftMargin,
+            DateBottomMargin = yamlConfig.DateBottomMargin,
+            DateFontSize = yamlConfig.DateFontSize
         };
         foreach (var item in yamlConfig.Areas)
         {
@@ -167,7 +197,16 @@ public class CertificateTemplateConfig
             return false;
         }
 
-        return ConfigPerAreaType.Count == other.ConfigPerAreaType.Count &&
+        return AreaRightMargin == other.AreaRightMargin &&
+               AreaTopMargin == other.AreaTopMargin &&
+               NameLeftMargin == other.NameLeftMargin &&
+               NameBottomMargin == other.NameBottomMargin &&
+               NameFontSize == other.NameFontSize &&
+               NameMaxWidth == other.NameMaxWidth &&
+               DateLeftMargin == other.DateLeftMargin &&
+               DateBottomMargin == other.DateBottomMargin &&
+               DateFontSize == other.DateFontSize &&
+               ConfigPerAreaType.Count == other.ConfigPerAreaType.Count &&
                ConfigPerAreaType.All(kvp =>
                    other.ConfigPerAreaType.TryGetValue(kvp.Key, out var otherValue) &&
                    kvp.Value.Equals(otherValue));
@@ -183,7 +222,9 @@ public class CertificateTemplateConfig
             hash = hash * 31 + kvp.Value.GetHashCode();
         }
 
-        return hash;
+        return HashCode.Combine(hash, AreaRightMargin, AreaTopMargin,
+            NameLeftMargin, NameBottomMargin, NameFontSize, NameMaxWidth,
+            HashCode.Combine(DateLeftMargin, DateBottomMargin, DateFontSize));
     }
 
     public override string ToString()
@@ -192,12 +233,22 @@ public class CertificateTemplateConfig
         foreach (CertificateTemplateType type in ConfigPerAreaType.Keys.Order())
         {
             var areaConfig = ConfigPerAreaType[type];
+            sb.AppendLine("areas:");
             sb.AppendLine($"- area: {(int)type}");
             sb.AppendLine($"  area_font_size: {areaConfig.AreaFontSize}");
             sb.AppendLine($"  area_color:");
             sb.AppendLine($"    r: {areaConfig.AreaColor.R}");
             sb.AppendLine($"    g: {areaConfig.AreaColor.G}");
             sb.AppendLine($"    b: {areaConfig.AreaColor.B}");
+            sb.AppendLine($"area_right_margin: {AreaRightMargin}");
+            sb.AppendLine($"area_top_margin: {AreaTopMargin}");
+            sb.AppendLine($"name_left_margin: {NameLeftMargin}");
+            sb.AppendLine($"name_bottom_margin: {NameBottomMargin}");
+            sb.AppendLine($"name_font_size: {NameFontSize}");
+            sb.AppendLine($"name_max_width: {NameMaxWidth}");
+            sb.AppendLine($"date_left_margin: {DateLeftMargin}");
+            sb.AppendLine($"date_bottom_margin: {DateBottomMargin}");
+            sb.AppendLine($"date_font_size: {DateFontSize}");
         }
 
         return sb.ToString();

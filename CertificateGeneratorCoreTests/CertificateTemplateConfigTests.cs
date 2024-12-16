@@ -34,6 +34,11 @@ public class CertificateTemplateConfigTests
         area_top_margin: 42
         name_left_margin: 810
         name_bottom_margin: 750
+        name_font_size: 175
+        name_max_width: 1670
+        date_left_margin: 810
+        date_bottom_margin: 460
+        date_font_size: 50
         """;
         CertificateTemplateConfig expected = new()
         {
@@ -49,7 +54,12 @@ public class CertificateTemplateConfigTests
             AreaRightMargin = 60,
             AreaTopMargin = 42,
             NameLeftMargin = 810,
-            NameBottomMargin = 750
+            NameBottomMargin = 750,
+            NameFontSize = 175,
+            NameMaxWidth = 1670,
+            DateLeftMargin = 810,
+            DateBottomMargin = 460,
+            DateFontSize = 50
         };
 
         // Act

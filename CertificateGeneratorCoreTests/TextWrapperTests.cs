@@ -15,13 +15,13 @@ public class TextWrapperTests
         var paint = new SKPaint
         {
             Color = SKColors.White,
-            TextSize = CertificateGenerator.FontSizeName,
+            TextSize = sut.Config.NameFontSize,
             IsAntialias = true,
             Typeface = sut.RobotoSlabTypefaceMedium
         };
 
         // Act
-        IList<string> actual = TextWrapper.WrapText(original, paint, CertificateGenerator.MaxNameWidth);
+        IList<string> actual = TextWrapper.WrapText(original, paint, sut.Config.NameMaxWidth);
 
         // Assert
         Assert.That(actual.Count, Is.GreaterThanOrEqualTo(1));

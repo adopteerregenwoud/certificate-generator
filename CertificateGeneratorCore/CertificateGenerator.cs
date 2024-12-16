@@ -13,13 +13,8 @@ public class CertificateGenerator
     private readonly ITemplateBitmapRetriever _templateBitmapRetriever;
     public SKTypeface RobotoSlabTypefaceMedium { get; private set; }
     public SKTypeface RobotoSlabTypefaceRegular { get; private set; }
-    private readonly CertificateTemplateConfig _config;
+    public CertificateTemplateConfig Config { get; private set; }
 
-    public const int MaxNameWidth = 1670;
-    public const int FontSizeName = 175;
-    private const int leftMarginDate = 810;
-    private const int bottomMarginDate = 460;
-    private const int fontSizeDate = 50;
     private const int jpgQuality = 94;
 
     public CertificateGenerator(ITemplateBitmapRetriever templateBitmapRetriever)
@@ -29,7 +24,7 @@ public class CertificateGenerator
         RobotoSlabTypefaceMedium = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Medium.ttf");
         RobotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
 
-        _config = CertificateTemplateConfig.Default;
+        Config = CertificateTemplateConfig.Default;
     }
 
     private static SKTypeface ReadFontFromEmbeddedResource(string resourceName)
@@ -68,8 +63,8 @@ public class CertificateGenerator
         const int dropShadowSigma = 15;
 
         CertificateTemplateType templateType = CertificateTemplateTypeHelper.GetTypeFromAreaSize(squareMeters);
-        SKColor textColor = ConvertToSkColor(_config[templateType].AreaColor);
-        int fontSize = _config[templateType].AreaFontSize;
+        SKColor textColor = ConvertToSkColor(Config[templateType].AreaColor);
+        int fontSize = Config[templateType].AreaFontSize;
 
         // We don't want the size of dropshadow to influence the location of the text.
         // So we measure with a different paint than we actually draw.
@@ -94,7 +89,7 @@ public class CertificateGenerator
 
         string m2Text = $"m²";
         float m2TextSize = paintForMeasure.MeasureText(m2Text);
-        var point = new SKPoint(bitmap.Width - _config.AreaRightMargin - m2TextSize, _config.AreaTopMargin + fontSize);
+        var point = new SKPoint(bitmap.Width - Config.AreaRightMargin - m2TextSize, Config.AreaTopMargin + fontSize);
         canvas.DrawText(m2Text, point, paintForRender);
 
         paintForMeasure.Typeface = RobotoSlabTypefaceMedium;
@@ -102,7 +97,7 @@ public class CertificateGenerator
         string text = $"{squareMeters}";
         float textSize = paintForMeasure.MeasureText(text);
 
-        point = new SKPoint(bitmap.Width - _config.AreaRightMargin - m2TextSize - textSize, _config.AreaTopMargin + fontSize);
+        point = new SKPoint(bitmap.Width - Config.AreaRightMargin - m2TextSize - textSize, Config.AreaTopMargin + fontSize);
         canvas.DrawText(text, point, paintForRender);
     }
 
@@ -116,24 +111,24 @@ public class CertificateGenerator
         var paint = new SKPaint
         {
             Color = SKColors.White,
-            TextSize = FontSizeName,
+            TextSize = Config.NameFontSize,
             IsAntialias = true,
             Typeface = RobotoSlabTypefaceMedium
         };
 
-        IList<string> wrappedLines = TextWrapper.WrapText(name, paint, MaxNameWidth);
+        IList<string> wrappedLines = TextWrapper.WrapText(name, paint, Config.NameMaxWidth);
 
         int firstLineYOffset = 0;
         if (wrappedLines.Count == 1)
         {
-            firstLineYOffset = FontSizeName / 2;
+            firstLineYOffset = Config.NameFontSize / 2;
         }
-        var point = new SKPoint(_config.NameLeftMargin, bitmap.Height - _config.NameBottomMargin + firstLineYOffset);
+        var point = new SKPoint(Config.NameLeftMargin, bitmap.Height - Config.NameBottomMargin + firstLineYOffset);
         canvas.DrawText(wrappedLines[0], point, paint);
 
         if (wrappedLines.Count > 1)
         {
-            point = new SKPoint(_config.NameLeftMargin, bitmap.Height - _config.NameBottomMargin + FontSizeName);
+            point = new SKPoint(Config.NameLeftMargin, bitmap.Height - Config.NameBottomMargin + Config.NameFontSize);
             canvas.DrawText(wrappedLines[1], point, paint);
         }
 
@@ -148,12 +143,12 @@ public class CertificateGenerator
         var paint = new SKPaint
         {
             Color = SKColors.White,
-            TextSize = fontSizeDate,
+            TextSize = Config.DateFontSize,
             IsAntialias = true,
             Typeface = RobotoSlabTypefaceRegular
         };
 
-        var point = new SKPoint(leftMarginDate, bitmap.Height - bottomMarginDate);
+        var point = new SKPoint(Config.DateLeftMargin, bitmap.Height - Config.DateBottomMargin);
         canvas.DrawText(date, point, paint);
     }
 
