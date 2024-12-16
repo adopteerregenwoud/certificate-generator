@@ -19,7 +19,7 @@ public class CertificateController : ControllerBase
 
         _logger.LogInformation("Reading certificate templates from {TemplateDirectory}", _config.TemplateDirectory);
         var templateBitmapRetriever = new FileTemplateBitmapRetriever(_config.TemplateDirectory);
-        _certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
+        _certificateGenerator = new CertificateGenerator(templateBitmapRetriever, CertificateTemplateConfig.Default);
     }
 
     [HttpGet(Name = "generate")]

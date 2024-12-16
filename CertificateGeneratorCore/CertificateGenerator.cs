@@ -17,14 +17,14 @@ public class CertificateGenerator
 
     private const int jpgQuality = 94;
 
-    public CertificateGenerator(ITemplateBitmapRetriever templateBitmapRetriever)
+    public CertificateGenerator(ITemplateBitmapRetriever templateBitmapRetriever, CertificateTemplateConfig config)
     {
         _templateBitmapRetriever = templateBitmapRetriever;
 
         RobotoSlabTypefaceMedium = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Medium.ttf");
         RobotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
 
-        Config = CertificateTemplateConfig.Default;
+        Config = config;
     }
 
     private static SKTypeface ReadFontFromEmbeddedResource(string resourceName)

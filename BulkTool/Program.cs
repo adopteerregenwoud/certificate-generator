@@ -16,7 +16,7 @@ internal class Program
 
         Console.WriteLine($"Reading certificate templates from {templateDirectory}...");
         using var templateBitmapRetriever = new FileTemplateBitmapRetriever(templateDirectory);
-        var certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
+        var certificateGenerator = new CertificateGenerator(templateBitmapRetriever, CertificateTemplateConfig.Default);
 
         Console.WriteLine($"Reading records from {excelPath}...");
         IEnumerable<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcelWidthAdoptionRecords(excelPath);

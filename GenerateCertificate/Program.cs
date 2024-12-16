@@ -19,7 +19,7 @@ internal class Program
 
         Console.WriteLine($"Reading certificate templates from {templateDirectory}...");
         using var templateBitmapRetriever = new FileTemplateBitmapRetriever(templateDirectory);
-        var certificateGenerator = new CertificateGenerator(templateBitmapRetriever);
+        var certificateGenerator = new CertificateGenerator(templateBitmapRetriever, CertificateTemplateConfig.Default);
 
         AdoptionRecord adoptionRecord = new(name, squareMeters, date, language);
         CertificateUtils.GenerateCertificate(adoptionRecord, certificateGenerator, outputDirectory);
