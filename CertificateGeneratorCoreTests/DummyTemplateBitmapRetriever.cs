@@ -2,11 +2,11 @@ using SkiaSharp;
 
 namespace CertificateGeneratorCoreTests;
 
-public class DummyTemplateBitmapReceiver : ITemplateBitmapRetriever
+public class DummyTemplateBitmapRetriever : ITemplateBitmapRetriever
 {
     private readonly SKBitmap _certificateTemplateBitmap;
 
-    public DummyTemplateBitmapReceiver()
+    public DummyTemplateBitmapRetriever()
     {
         _certificateTemplateBitmap = ImageUtils.CreateBlackBitmap();
     }
