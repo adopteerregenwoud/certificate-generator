@@ -24,12 +24,11 @@ public class CertificateGeneratorTests
     {
         // Arrange
         var adoptionRecord = new AdoptionRecord("Janssen", 20, "19-06-2024", Language.Dutch);
-        using Stream templateStream = ImageUtils.CreateBlackTemplate();
         var sut = new CertificateGenerator(new DummyTemplateBitmapRetriever(), CertificateTemplateConfig.Default);
-        CertificateGenerator.Result result = sut.Generate(adoptionRecord);
 
         // Act
-        result = sut.Generate(adoptionRecord);
+        sut.Generate(adoptionRecord);
+        CertificateGenerator.Result result = sut.Generate(adoptionRecord);
 
         // Assert
         Assert.That(AreAllPixelsBlack(result.Jpg3MbStream), Is.False);

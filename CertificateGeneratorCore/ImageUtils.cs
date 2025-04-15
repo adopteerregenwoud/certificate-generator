@@ -6,7 +6,12 @@ public static class ImageUtils
 {
     public static SKBitmap CreateBlackBitmap()
     {
-        var bitmap = new SKBitmap(3507, 2480);
+        return CreateBlackBitmap(3507, 2480);
+    }
+
+    public static SKBitmap CreateBlackBitmap(int width, int height)
+    {
+        var bitmap = new SKBitmap(width, height);
         using (var canvas = new SKCanvas(bitmap))
         {
             canvas.Clear(SKColors.Black);
