@@ -15,6 +15,7 @@ namespace BulkToolUI;
 public partial class MainWindow : Window
 {
     const string TemplateDirTextBoxName = "TemplateDirTextBox";
+    const string LogoPathTextBoxName = "LogoPathTextBox";
     const string OutputDirTextBoxName = "OutputDirTextBox";
     const string ExcelFileTextBoxName = "ExcelFileTextBox";
     const string ProgressTextBlockName = "ProgressTextBlock";
@@ -37,6 +38,7 @@ public partial class MainWindow : Window
     {
         Settings settings = SettingsService.LoadSettings();
         this.FindControl<TextBox>(TemplateDirTextBoxName)!.Text = settings.TemplateDir;
+        this.FindControl<TextBox>(LogoPathTextBoxName)!.Text = settings.LogoPath;
         this.FindControl<TextBox>(OutputDirTextBoxName)!.Text = settings.OutputDir;
     }
 
@@ -91,6 +93,32 @@ public partial class MainWindow : Window
         }
     }
 
+    private async void OnBrowseLogoButtonClick(object sender, RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null)
+        {
+            return;
+        }
+
+        IReadOnlyList<IStorageFile> files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Logo file",
+            AllowMultiple = false,
+            FileTypeFilter = [
+                new FilePickerFileType("Image files (*.png, *.jpg, *.jpeg)")
+                {
+                    Patterns = ["*.png", "*.jpg", "*.jpeg"]
+                }
+            ]
+        });
+
+        if (files.Count >= 1)
+        {
+            LogoPathTextBox.Text = files[0].Path.AbsolutePath;
+        }
+    }
+
     private int GenerateCertificates(ViewModel model)
     {
         try
@@ -137,6 +165,7 @@ public partial class MainWindow : Window
         ViewModel model = new()
         {
             TemplateDir = this.FindControl<TextBox>(TemplateDirTextBoxName)!.Text,
+            LogoPath = this.FindControl<TextBox>(LogoPathTextBoxName)!.Text,
             OutputDir = this.FindControl<TextBox>(OutputDirTextBoxName)!.Text,
             ExcelFile = this.FindControl<TextBox>(ExcelFileTextBoxName)!.Text,
         };
@@ -155,6 +184,18 @@ public partial class MainWindow : Window
         if (!Directory.Exists(model.TemplateDir))
         {
             await MessageBox.Show(this, "Template folder does not exist.");
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(model.LogoPath))
+        {
+            await MessageBox.Show(this, "Please fill in the logo path.");
+            return false;
+        }
+
+        if (!File.Exists(model.LogoPath))
+        {
+            await MessageBox.Show(this, "Logo file does not exist.");
             return false;
         }
 
@@ -187,7 +228,7 @@ public partial class MainWindow : Window
 
     private static void SaveSettings(ViewModel model)
     {
-        Settings settings = new(model.TemplateDir!, model.OutputDir!);
+        Settings settings = new(model.TemplateDir!, model.LogoPath!, model.OutputDir!);
         SettingsService.SaveSettings(settings);
     }
 

@@ -29,7 +29,7 @@ public static class SettingsService
     {
         if (!File.Exists(SettingsFilePath))
         {
-            return new Settings("", "");
+            return new Settings(string.Empty, string.Empty, string.Empty);
         }
 
         var json = File.ReadAllText(SettingsFilePath);
