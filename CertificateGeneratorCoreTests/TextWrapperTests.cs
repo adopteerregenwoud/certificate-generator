@@ -10,7 +10,6 @@ public class TextWrapperTests
     public void TestWrapText(string original, string firstWrappedLine, string? secondWrappedLine)
     {
         // Arrange
-        using Stream templateStream = ImageUtils.CreateBlackTemplate();
         var sut = new CertificateGenerator(new DummyBitmapRetriever(), CertificateTemplateConfig.Default);
         var paint = new SKPaint
         {
