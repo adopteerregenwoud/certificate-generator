@@ -69,7 +69,7 @@ public class CertificateGenerator
 
     private void RenderLogo(SKCanvas canvas)
     {
-        using SKBitmap? logoBitmap = _bitmapRetriever.RetrieveLogo();
+        SKBitmap? logoBitmap = _bitmapRetriever.RetrieveLogo();
         if (logoBitmap == null)
         {
             return;
