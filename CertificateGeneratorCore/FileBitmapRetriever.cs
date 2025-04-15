@@ -16,6 +16,7 @@ namespace CertificateGeneratorCore;
 public class FileBitmapRetriever : IBitmapRetriever
 {
     private readonly SKBitmap _fallbackCertificateTemplateBitmap;
+    private readonly SKBitmap? _logoBitmap = null;
 
     /// <summary>
     /// This will store the template bitmap for a specific language & area combination.
@@ -41,7 +42,7 @@ public class FileBitmapRetriever : IBitmapRetriever
     private const int ExpectedWidth = 3507;
     private const int ExpectedHeight = 2480;
 
-    public FileBitmapRetriever(string templateDirectoryPath)
+    public FileBitmapRetriever(string templateDirectoryPath, string logoPath)
     {
         foreach (Language language in _languages)
         {
@@ -61,6 +62,12 @@ public class FileBitmapRetriever : IBitmapRetriever
         }
 
         _fallbackCertificateTemplateBitmap = _certificateTemplateBitmaps[Language.Dutch][20];
+
+        if (!string.IsNullOrEmpty(logoPath))
+        {
+            using var logoStream = new FileStream(logoPath, FileMode.Open, FileAccess.Read);
+            _logoBitmap = ReadBitmapFromStream(logoStream);
+        }
     }
 
     public SKBitmap RetrieveTemplate(int squareMeters, Language language)
@@ -92,6 +99,17 @@ public class FileBitmapRetriever : IBitmapRetriever
             if (disposing)
             {
                 _fallbackCertificateTemplateBitmap.Dispose();
+                foreach (var language in _languages)
+                {
+                    foreach (var areaM2 in _areasM2)
+                    {
+                        if (_certificateTemplateBitmaps[language].ContainsKey(areaM2))
+                        {
+                            _certificateTemplateBitmaps[language][areaM2].Dispose();
+                        }
+                    }
+                }
+                _logoBitmap?.Dispose();
             }
 
             _disposed = true;
@@ -112,5 +130,10 @@ public class FileBitmapRetriever : IBitmapRetriever
         }
 
         return _fallbackCertificateTemplateBitmap;
+    }
+
+    public SKBitmap? RetrieveLogo()
+    {
+        return _logoBitmap;
     }
 }

@@ -6,16 +6,17 @@ internal class Program
     {
         if (args.Length != 3)
         {
-            Console.WriteLine("Usage: BulkTool <path to excel> <template directory> <output directory>");
+            Console.WriteLine("Usage: BulkTool <path to excel> <template directory> <logo path> <output directory>");
             Environment.Exit(1);
         }
 
         string excelPath = args[0];
         string templateDirectory = args[1];
-        string outputDirectory = args[2];
+        string logoPath = args[2];
+        string outputDirectory = args[3];
 
         Console.WriteLine($"Reading certificate templates from {templateDirectory}...");
-        using var bitmapRetriever = new FileBitmapRetriever(templateDirectory);
+        using var bitmapRetriever = new FileBitmapRetriever(templateDirectory, logoPath);
         CertificateTemplateConfig config = GetOrCreateConfigFromTemplateDirectory(templateDirectory);
         var certificateGenerator = new CertificateGenerator(bitmapRetriever, config);
 

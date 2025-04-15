@@ -18,7 +18,7 @@ public static class CertificateUtils
     /// <returns>The path to the generate jpg file.</returns>
     public static string GenerateCertificate(AdoptionRecord adoptionRecord, CertificateGenerator certificateGenerator, string outputDirectory)
     {
-        CertificateGenerator.Result result = certificateGenerator.Generate(adoptionRecord);
+        CertificateGenerator.Result result = certificateGenerator.GenerateJpg(adoptionRecord);
 
         string fileBasename = GenerateBasename(adoptionRecord);
         string outputPath = Path.Combine(outputDirectory, $"{fileBasename}.jpg");

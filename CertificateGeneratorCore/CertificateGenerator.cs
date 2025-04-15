@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Reflection;
 using SkiaSharp;
 
@@ -11,6 +12,7 @@ public class CertificateGenerator
     }
 
     private readonly IBitmapRetriever _bitmapRetriever;
+    private readonly BitmapCenterer _bitmapCenterer;
     public SKTypeface RobotoSlabTypefaceMedium { get; private set; }
     public SKTypeface RobotoSlabTypefaceRegular { get; private set; }
     public CertificateTemplateConfig Config { get; private set; }
@@ -25,6 +27,7 @@ public class CertificateGenerator
         RobotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
 
         Config = config;
+        _bitmapCenterer = new BitmapCenterer(Config.LogoBoundingBox);
     }
 
     private static SKTypeface ReadFontFromEmbeddedResource(string resourceName)
@@ -40,21 +43,55 @@ public class CertificateGenerator
         return SKTypeface.FromStream(fontStream);
     }
 
-    public Result Generate(AdoptionRecord adoptionRecord)
+    public Result GenerateJpg(AdoptionRecord adoptionRecord)
     {
-        using var bitmap = _bitmapRetriever.RetrieveTemplate(adoptionRecord.SquareMeters, adoptionRecord.Language).Copy();
-        using var canvas = new SKCanvas(bitmap);
-
-        RenderSquareMeters(canvas, bitmap, adoptionRecord.SquareMeters);
-        RenderName(canvas, bitmap, adoptionRecord.Name);
-        RenderDate(canvas, bitmap, adoptionRecord.Date);
-
+        using var bitmap = GenerateBitmap(adoptionRecord);
         SKData imageDataJpg = CreateJpgFromBitmap(bitmap);
 
         return new Result
         {
             Jpg3MbStream = CreateMemoryStreamFromImageData(imageDataJpg)
         };
+    }
+
+    public SKBitmap GenerateBitmap(AdoptionRecord adoptionRecord)
+    {
+        var bitmap = _bitmapRetriever.RetrieveTemplate(adoptionRecord.SquareMeters, adoptionRecord.Language).Copy();
+        using var canvas = new SKCanvas(bitmap);
+
+        RenderSquareMeters(canvas, bitmap, adoptionRecord.SquareMeters);
+        RenderName(canvas, bitmap, adoptionRecord.Name);
+        RenderDate(canvas, bitmap, adoptionRecord.Date);
+        RenderLogo(canvas);
+
+        return bitmap;
+    }
+
+    private void RenderLogo(SKCanvas canvas)
+    {
+        using SKBitmap? logoBitmap = _bitmapRetriever.RetrieveLogo();
+        if (logoBitmap == null)
+        {
+            return;
+        }
+
+        var boundingBox = Config.LogoBoundingBox;
+        if (boundingBox.Width == 0 || boundingBox.Height == 0)
+        {
+            return;
+        }
+
+        Rectangle logoDrawRect = _bitmapCenterer.Center(logoBitmap);
+        SKRect skDrawRect = new(
+            logoDrawRect.X,
+            logoDrawRect.Y,
+            logoDrawRect.X + logoDrawRect.Width,
+            logoDrawRect.Y + logoDrawRect.Height);
+        canvas.DrawBitmap(logoBitmap, skDrawRect, new SKPaint
+        {
+            FilterQuality = SKFilterQuality.High,
+            IsAntialias = true
+        });
     }
 
     private void RenderSquareMeters(SKCanvas canvas, SKBitmap bitmap, int squareMeters)

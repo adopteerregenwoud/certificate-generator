@@ -18,7 +18,10 @@ public class CertificateController : ControllerBase
         _config = apiConfiguration.Value;
 
         _logger.LogInformation("Reading certificate templates from {TemplateDirectory}", _config.TemplateDirectory);
-        var bitmapRetriever = new FileBitmapRetriever(_config.TemplateDirectory);
+
+        // For now we only support regular templates, not custom templates with a separate logo.
+        var bitmapRetriever = new FileBitmapRetriever(_config.TemplateDirectory, string.Empty);
+
         _certificateGenerator = new CertificateGenerator(bitmapRetriever, CertificateTemplateConfig.Default);
     }
 
@@ -29,7 +32,7 @@ public class CertificateController : ControllerBase
         DateOnly date = new(year, month, day);
         _logger.LogInformation("Generating certificate for {name}, {area} m2, {date}, {language}", obfuscatedName, squareMeters, date, language);
         AdoptionRecord adoptionRecord = new(name, squareMeters, $"{date:dd-MM-yyy}", language);
-        CertificateGenerator.Result result = _certificateGenerator.Generate(adoptionRecord);
+        CertificateGenerator.Result result = _certificateGenerator.GenerateJpg(adoptionRecord);
         _logger.LogInformation("{nrBytes} bytes generated", result.Jpg3MbStream.Length);
         return new FileStreamResult(result.Jpg3MbStream, "image/jpeg");
     }

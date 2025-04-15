@@ -22,6 +22,7 @@ public partial class MainWindow : Window
     public class ViewModel
     {
         public string? TemplateDir { get; set; }
+        public string? LogoPath { get; set; }
         public string? OutputDir { get; set; }
         public string? ExcelFile { get; set; }
     }
@@ -94,7 +95,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            using var bitmapRetriever = new FileBitmapRetriever(model.TemplateDir!);
+            using var bitmapRetriever = new FileBitmapRetriever(model.TemplateDir!, model.LogoPath!);
             CertificateTemplateConfig config = GetOrCreateConfigFromTemplateDirectory(model.TemplateDir!);
             var certificateGenerator = new CertificateGenerator(bitmapRetriever, config);
             List<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcelWidthAdoptionRecords(model.ExcelFile!).ToList();

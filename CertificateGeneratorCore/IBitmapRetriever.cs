@@ -8,5 +8,6 @@ namespace CertificateGeneratorCore;
 /// </summary>
 public interface IBitmapRetriever : IDisposable
 {
+    SKBitmap? RetrieveLogo();
     SKBitmap RetrieveTemplate(int squareMeters, Language language);
 }

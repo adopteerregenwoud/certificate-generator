@@ -18,7 +18,7 @@ internal class Program
         Language language = (Language)Enum.Parse(typeof(Language), args[5]);
 
         Console.WriteLine($"Reading certificate templates from {templateDirectory}...");
-        using var bitmapRetriever = new FileBitmapRetriever(templateDirectory);
+        using var bitmapRetriever = new FileBitmapRetriever(templateDirectory, string.Empty);
         var certificateGenerator = new CertificateGenerator(bitmapRetriever, CertificateTemplateConfig.Default);
 
         AdoptionRecord adoptionRecord = new(name, squareMeters, date, language);

@@ -72,7 +72,7 @@ public partial class MainWindow : Window
     {
         AdoptionRecord adoptionRecord = CreateAdoptionRecordFromViewModel(model);
 
-        using var bitmapRetriever = new FileBitmapRetriever(model.TemplateDir!);
+        using var bitmapRetriever = new FileBitmapRetriever(model.TemplateDir!, string.Empty);
         var certificateGenerator = new CertificateGenerator(bitmapRetriever, CertificateTemplateConfig.Default);
         return CertificateUtils.GenerateCertificate(adoptionRecord, certificateGenerator, model.OutputDir!);
     }
