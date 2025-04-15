@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace CertificateGeneratorCoreTests;
 
 public class CertificateTemplateConfigTests
@@ -9,7 +11,74 @@ public class CertificateTemplateConfigTests
     }
 
     [Test]
-    public void TestFromYaml()
+    public void TestFromYamlWithLogoBoundingBox()
+    {
+        // Arrange
+        string yaml = """
+        areas:
+          - area: 1
+            area_font_size: 390
+            area_color:
+              r: 64
+              g: 128
+              b: 192
+          - area: 4
+            area_font_size: 430
+          - area: 10
+            area_font_size: 430
+          - area: 20
+            area_font_size: 360
+          - area: 50
+            area_font_size: 430
+          - area: 100
+            area_font_size: 430
+        area_right_margin: 60
+        area_top_margin: 42
+        name_left_margin: 810
+        name_bottom_margin: 750
+        name_font_size: 175
+        name_max_width: 1670
+        date_left_margin: 810
+        date_bottom_margin: 460
+        date_font_size: 50
+        logo_bounding_box:
+          x: 50
+          y: 50
+          width: 100
+          height: 100
+        """;
+        CertificateTemplateConfig expected = new()
+        {
+            ConfigPerAreaType = new Dictionary<CertificateTemplateType, CertificateTemplateAreaConfig>()
+            {
+                [CertificateTemplateType.OneM2] = new() { AreaFontSize = 390, AreaColor = new(64, 128, 192) },
+                [CertificateTemplateType.FourM2] = new() { AreaFontSize = 430 },
+                [CertificateTemplateType.TenM2] = new() { AreaFontSize = 430 },
+                [CertificateTemplateType.TwentyM2] = new() { AreaFontSize = 360 },
+                [CertificateTemplateType.FiftyM2] = new() { AreaFontSize = 430 },
+                [CertificateTemplateType.HundredM2] = new() { AreaFontSize = 430 },
+            },
+            AreaRightMargin = 60,
+            AreaTopMargin = 42,
+            NameLeftMargin = 810,
+            NameBottomMargin = 750,
+            NameFontSize = 175,
+            NameMaxWidth = 1670,
+            DateLeftMargin = 810,
+            DateBottomMargin = 460,
+            DateFontSize = 50,
+            LogoBoundingBox = new Rectangle(50, 50, 100, 100)
+        };
+
+        // Act
+        CertificateTemplateConfig actual = CertificateTemplateConfig.FromYaml(yaml);
+
+        // Assert
+        Assert.That(actual, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void TestFromYamlWithoutLogoBoundingBox()
     {
         // Arrange
         string yaml = """
@@ -59,7 +128,8 @@ public class CertificateTemplateConfigTests
             NameMaxWidth = 1670,
             DateLeftMargin = 810,
             DateBottomMargin = 460,
-            DateFontSize = 50
+            DateFontSize = 50,
+            LogoBoundingBox = new Rectangle(0, 0, 0, 0)
         };
 
         // Act

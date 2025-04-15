@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Text;
 using YamlDotNet.Serialization;
 
@@ -57,6 +58,31 @@ public class CertificateTemplateAreaConfig
 public class CertificateTemplateConfig
 {
     /// <summary>
+    /// Helper class to read logo bounding box from yaml.
+    /// </summary>
+    public class RectangleYaml(int x, int y, int width, int height)
+    {
+        [YamlMember(Alias = "x")]
+        public int X { get; set; } = x;
+
+        [YamlMember(Alias = "y")]
+        public int Y { get; set; } = y;
+
+        [YamlMember(Alias = "width")]
+        public int Width { get; set; } = width;
+
+        [YamlMember(Alias = "height")]
+        public int Height { get; set; } = height;
+
+        public RectangleYaml() : this(0, 0, 0, 0) { }
+
+        public Rectangle ToRectangle()
+        {
+            return new Rectangle(X, Y, Width, Height);
+        }
+    };
+
+    /// <summary>
     /// Helper class to read data from yaml.
     /// </summary>
     private class YamlAreaItem
@@ -102,6 +128,9 @@ public class CertificateTemplateConfig
 
         [YamlMember(Alias = "date_font_size")]
         public int DateFontSize { get; set; }
+
+        [YamlMember(Alias = "logo_bounding_box")]
+        public RectangleYaml LogoBoundingBox { get; set; } = new(0, 0, 0, 0);
     }
 
     // Actual configuration:
@@ -115,6 +144,7 @@ public class CertificateTemplateConfig
     public int DateLeftMargin { get; set; }
     public int DateBottomMargin { get; set; }
     public int DateFontSize { get; set; }
+    public Rectangle LogoBoundingBox { get; set; } = new(0, 0, 0, 0);
 
     public static CertificateTemplateConfig Default => new()
     {
@@ -135,7 +165,8 @@ public class CertificateTemplateConfig
         NameMaxWidth = 1670,
         DateLeftMargin = 810,
         DateBottomMargin = 460,
-        DateFontSize = 50
+        DateFontSize = 50,
+        LogoBoundingBox = new Rectangle(0, 0, 0, 0)
     };
 
     public static CertificateTemplateConfig FromYaml(string yaml)
@@ -152,7 +183,8 @@ public class CertificateTemplateConfig
             NameMaxWidth = yamlConfig.NameMaxWidth,
             DateLeftMargin = yamlConfig.DateLeftMargin,
             DateBottomMargin = yamlConfig.DateBottomMargin,
-            DateFontSize = yamlConfig.DateFontSize
+            DateFontSize = yamlConfig.DateFontSize,
+            LogoBoundingBox = yamlConfig.LogoBoundingBox.ToRectangle()
         };
         foreach (var item in yamlConfig.Areas)
         {
@@ -206,6 +238,7 @@ public class CertificateTemplateConfig
                DateLeftMargin == other.DateLeftMargin &&
                DateBottomMargin == other.DateBottomMargin &&
                DateFontSize == other.DateFontSize &&
+               LogoBoundingBox == other.LogoBoundingBox &&
                ConfigPerAreaType.Count == other.ConfigPerAreaType.Count &&
                ConfigPerAreaType.All(kvp =>
                    other.ConfigPerAreaType.TryGetValue(kvp.Key, out var otherValue) &&
@@ -252,6 +285,7 @@ public class CertificateTemplateConfig
         sb.AppendLine($"date_left_margin: {DateLeftMargin}");
         sb.AppendLine($"date_bottom_margin: {DateBottomMargin}");
         sb.AppendLine($"date_font_size: {DateFontSize}");
+        sb.AppendLine($"logo_bounding_box: {LogoBoundingBox.Left}, {LogoBoundingBox.Top}, {LogoBoundingBox.Width}, {LogoBoundingBox.Height}");
 
         return sb.ToString();
     }
