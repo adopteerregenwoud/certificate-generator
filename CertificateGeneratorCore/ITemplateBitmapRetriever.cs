@@ -6,7 +6,7 @@ namespace CertificateGeneratorCore;
 /// Interface to retrieve a template bitmap given the square meters that are
 /// adopted and the language of the certificate.
 /// </summary>
-public interface ITemplateBitmapRetriever : IDisposable
+public interface IBitmapRetriever : IDisposable
 {
-    SKBitmap Retrieve(int squareMeters, Language language);
+    SKBitmap RetrieveTemplate(int squareMeters, Language language);
 }

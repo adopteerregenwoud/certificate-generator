@@ -13,7 +13,7 @@ namespace CertificateGeneratorCore;
 /// 20-english.png
 /// TODO: add more
 /// </summary>
-public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
+public class FileBitmapRetriever : IBitmapRetriever
 {
     private readonly SKBitmap _fallbackCertificateTemplateBitmap;
 
@@ -41,7 +41,7 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
     private const int ExpectedWidth = 3507;
     private const int ExpectedHeight = 2480;
 
-    public FileTemplateBitmapRetriever(string templateDirectoryPath)
+    public FileBitmapRetriever(string templateDirectoryPath)
     {
         foreach (Language language in _languages)
         {
@@ -63,11 +63,11 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
         _fallbackCertificateTemplateBitmap = _certificateTemplateBitmaps[Language.Dutch][20];
     }
 
-    public SKBitmap Retrieve(int squareMeters, Language language)
+    public SKBitmap RetrieveTemplate(int squareMeters, Language language)
     {
         if (_disposed)
         {
-            throw new ObjectDisposedException(nameof(FileTemplateBitmapRetriever));
+            throw new ObjectDisposedException(nameof(FileBitmapRetriever));
         }
 
         return GetBitmap(squareMeters, language);
@@ -98,7 +98,7 @@ public class FileTemplateBitmapRetriever : ITemplateBitmapRetriever
         }
     }
 
-    ~FileTemplateBitmapRetriever()
+    ~FileBitmapRetriever()
     {
         Dispose(false);
     }

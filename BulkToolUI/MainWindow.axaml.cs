@@ -94,9 +94,9 @@ public partial class MainWindow : Window
     {
         try
         {
-            using var templateBitmapRetriever = new FileTemplateBitmapRetriever(model.TemplateDir!);
+            using var bitmapRetriever = new FileBitmapRetriever(model.TemplateDir!);
             CertificateTemplateConfig config = GetOrCreateConfigFromTemplateDirectory(model.TemplateDir!);
-            var certificateGenerator = new CertificateGenerator(templateBitmapRetriever, config);
+            var certificateGenerator = new CertificateGenerator(bitmapRetriever, config);
             List<AdoptionRecord> adoptionRecords = CertificateUtils.ParseExcelWidthAdoptionRecords(model.ExcelFile!).ToList();
             int currentRecord = 1;
             foreach (AdoptionRecord adoptionRecord in adoptionRecords)

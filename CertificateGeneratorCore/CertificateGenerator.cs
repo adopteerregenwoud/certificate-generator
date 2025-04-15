@@ -10,16 +10,16 @@ public class CertificateGenerator
         public required Stream Jpg3MbStream { get; set; }
     }
 
-    private readonly ITemplateBitmapRetriever _templateBitmapRetriever;
+    private readonly IBitmapRetriever _bitmapRetriever;
     public SKTypeface RobotoSlabTypefaceMedium { get; private set; }
     public SKTypeface RobotoSlabTypefaceRegular { get; private set; }
     public CertificateTemplateConfig Config { get; private set; }
 
     private const int jpgQuality = 94;
 
-    public CertificateGenerator(ITemplateBitmapRetriever templateBitmapRetriever, CertificateTemplateConfig config)
+    public CertificateGenerator(IBitmapRetriever bitmapRetriever, CertificateTemplateConfig config)
     {
-        _templateBitmapRetriever = templateBitmapRetriever;
+        _bitmapRetriever = bitmapRetriever;
 
         RobotoSlabTypefaceMedium = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Medium.ttf");
         RobotoSlabTypefaceRegular = ReadFontFromEmbeddedResource("CertificateGeneratorCore.fonts.RobotoSlab-Regular.ttf");
@@ -42,7 +42,7 @@ public class CertificateGenerator
 
     public Result Generate(AdoptionRecord adoptionRecord)
     {
-        using var bitmap = _templateBitmapRetriever.Retrieve(adoptionRecord.SquareMeters, adoptionRecord.Language).Copy();
+        using var bitmap = _bitmapRetriever.RetrieveTemplate(adoptionRecord.SquareMeters, adoptionRecord.Language).Copy();
         using var canvas = new SKCanvas(bitmap);
 
         RenderSquareMeters(canvas, bitmap, adoptionRecord.SquareMeters);

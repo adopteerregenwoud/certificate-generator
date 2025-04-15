@@ -10,7 +10,7 @@ public class CertificateGeneratorTests
     {
         // Arrange
         var adoptionRecord = new AdoptionRecord("Janssen", 20, "19-06-2024", Language.Dutch);
-        var sut = new CertificateGenerator(new DummyTemplateBitmapRetriever(), CertificateTemplateConfig.Default);
+        var sut = new CertificateGenerator(new DummyBitmapRetriever(), CertificateTemplateConfig.Default);
 
         // Act
         CertificateGenerator.Result result = sut.Generate(adoptionRecord);
@@ -24,7 +24,7 @@ public class CertificateGeneratorTests
     {
         // Arrange
         var adoptionRecord = new AdoptionRecord("Janssen", 20, "19-06-2024", Language.Dutch);
-        var sut = new CertificateGenerator(new DummyTemplateBitmapRetriever(), CertificateTemplateConfig.Default);
+        var sut = new CertificateGenerator(new DummyBitmapRetriever(), CertificateTemplateConfig.Default);
 
         // Act
         sut.Generate(adoptionRecord);
